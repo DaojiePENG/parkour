@@ -4,7 +4,7 @@ from legged_gym.envs.a1.a1_config import A1RoughCfg, A1RoughCfgPPO
 
 class A1FieldCfg( A1RoughCfg ):
     class env( A1RoughCfg.env ):
-        num_envs = 8192 # 4096
+        num_envs = 4096 # 8192
         obs_components = [
             "proprioception", # 48
             # "height_measurements", # 187

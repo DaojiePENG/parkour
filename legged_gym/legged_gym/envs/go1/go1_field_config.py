@@ -114,6 +114,7 @@ class Go1FieldCfg( A1FieldCfg ):
         init_dof_vel_range = [-5, 5]
 
     class rewards( A1FieldCfg.rewards ):
+        only_positive_rewards = False # 按原来的定义直接运行 reward 总是 0 ，修改显示小数点位数后还是如此。根据作者提示，尝试不使用仅正奖励；
         class scales:
             tracking_ang_vel = 0.05
             tracking_world_vel = 3.
@@ -211,5 +212,5 @@ class Go1FieldCfgPPO( A1FieldCfgPPO ):
         ("_actionClip" + Go1FieldCfg.normalization.clip_actions_method if getattr(Go1FieldCfg.normalization, "clip_actions_method", None) is not None else ""),
         ("_from" + "_".join(load_run.split("/")[-1].split("_")[:2]) if resume else "_noResume"),
         ])
-        max_iterations = 20000
+        max_iterations = 20000*8
         save_interval = 500
