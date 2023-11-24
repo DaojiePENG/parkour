@@ -4,7 +4,7 @@ from legged_gym.envs.a1.a1_config import A1RoughCfg, A1RoughCfgPPO
 
 class A1FieldCfg( A1RoughCfg ):
     class env( A1RoughCfg.env ):
-        num_envs = 4096 # 8192
+        num_envs = 8192 # 4096
         obs_components = [
             "proprioception", # 48
             # "height_measurements", # 187
@@ -190,6 +190,7 @@ class A1FieldCfg( A1RoughCfg ):
         push_robots = False 
 
     class rewards( A1RoughCfg.rewards ):
+        only_positive_rewards = False # 按原来的定义直接运行 reward 总是 0 ，修改显示小数点位数后还是如此。根据作者提示，尝试不使用仅正奖励；
         class scales:
             tracking_ang_vel = 0.05
             world_vel_l2norm = -1.
