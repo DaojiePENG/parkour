@@ -212,5 +212,5 @@ class Go1FieldCfgPPO( A1FieldCfgPPO ):
         ("_actionClip" + Go1FieldCfg.normalization.clip_actions_method if getattr(Go1FieldCfg.normalization, "clip_actions_method", None) is not None else ""),
         ("_from" + "_".join(load_run.split("/")[-1].split("_")[:2]) if resume else "_noResume"),
         ])
-        max_iterations = 20000*8
+        max_iterations = 20000
         save_interval = 500
