@@ -44,12 +44,23 @@ from .helpers import get_args, update_cfg_from_args, class_to_dict, get_load_pat
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 class TaskRegistry():
+    '''
+    该类在本文件最后进行初始化，创造了全局类变量 task_registry 。
+    该类在 __init__.py (legged_gym/legged_gym/envs) 中被调用来注册待训练的机器人及其配置信息；
+    该类在 play.py tain.py test_env.py 中进行了调用使用 make_env 和 make_alg_runner 来作为参数来创建环境和运行算法；
+
+    可以说这个类是整个 legged_gym 库里面最上层的类了，在它之上只有 play.py tain.py test_env.py 运行脚本的封装了。
+    '''
     def __init__(self):
         self.task_classes = {}
         self.env_cfgs = {}
         self.train_cfgs = {}
     
     def register(self, name: str, task_class: VecEnv, env_cfg: LeggedRobotCfg, train_cfg: LeggedRobotCfgPPO):
+        '''
+        这个函数是整个 TaskRegistry 类的核心函数，外部函数会通过调用它来实现注册功能；
+        它会将机器人的任务类、训练类、环境类都放在字典里面；
+        '''
         self.task_classes[name] = task_class
         self.env_cfgs[name] = env_cfg
         self.train_cfgs[name] = train_cfg
@@ -58,6 +69,12 @@ class TaskRegistry():
         return self.task_classes[name]
     
     def get_cfgs(self, name) -> Tuple[LeggedRobotCfg, LeggedRobotCfgPPO]:
+        '''
+        这个函数只在 play.py 和 test_env.py 使用到了，应该是从 name 关键名称提取相应的配置。
+        也就是说这个 train_cfgs[name] 是一个保存了各个机器人配置的字典。它包括了所有用 task_registry 注册过的机器人配置的配置。
+        
+        实际使用时会根据提供的 name 从 train_cfgs[name] 中提取特定的机器人配置 train_cfg 进行赋值。
+        '''
         train_cfg = self.train_cfgs[name]
         env_cfg = self.env_cfgs[name]
         # copy seed
@@ -152,7 +169,10 @@ class TaskRegistry():
         if not env_cfg is None:
             env_cfg_dict = class_to_dict(env_cfg)
             log_cfg_dict.update(env_cfg_dict)
-
+        '''
+        所有与 rsl_rl 库联系的内容集中在下面这句代码上了。
+        它调用 build_runner/OnPolicyRunner 完成了神经网络的创建和优化算法的选择，这两者的具体实现在rsl_rl库中。
+        '''
         runner = build_runner(
             getattr(train_cfg, "runner_class_name", "OnPolicyRunner"),
             env,
@@ -167,6 +187,11 @@ class TaskRegistry():
                 json.dump(log_cfg_dict, f, indent= 4)
         resume = train_cfg.runner.resume
         if resume:
+            '''
+            这个就是当训练好了模型后，希望载入训练好的模型参数来直接使用的情况。
+            也是返回一个可调用的 runner ，也就是一个包含很多函数的神经网络类，只不过这时只会使用其中获取动作控制目标值的函数。
+            实际使用的时候调用它的 get_inference_policy 函数就可以了。如 play.py 中的使用一样。
+            '''
             # load previously trained model
             resume_path = get_load_path(log_root, load_run=train_cfg.runner.load_run, checkpoint=train_cfg.runner.checkpoint)
             print(f"Loading model from: {resume_path}")

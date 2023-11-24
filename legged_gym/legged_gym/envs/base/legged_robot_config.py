@@ -33,7 +33,7 @@ from .base_config import BaseConfig
 class LeggedRobotCfg(BaseConfig):
     class env:
         num_envs = 4096
-        num_observations = 235
+        num_observations = 235 # 这个定义了有多少输入观测值（整个策略的输入参数数量），比如控制指令、自身感知、外部感知等。
         use_lin_vel = True
         num_privileged_obs = None # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
         num_actions = 12
@@ -43,8 +43,8 @@ class LeggedRobotCfg(BaseConfig):
 
     class terrain:
         mesh_type = 'trimesh' # "heightfield" # none, plane, heightfield or trimesh
-        horizontal_scale = 0.1 # [m]
-        vertical_scale = 0.005 # [m]
+        horizontal_scale = 0.1 # [m] # 距离转化成像素点数时使用；
+        vertical_scale = 0.005 # [m] # 距离转化成像素点数时使用；
         border_size = 25 # [m]
         curriculum = True
         static_friction = 1.0
@@ -57,12 +57,12 @@ class LeggedRobotCfg(BaseConfig):
         selected = False # select a unique terrain type and pass all arguments
         terrain_kwargs = None # Dict of arguments for selected terrain
         max_init_terrain_level = 5 # starting curriculum state
-        terrain_length = 8.
-        terrain_width = 8.
+        terrain_length = 8. # 小地形块儿的长度；
+        terrain_width = 8. # 小地形块儿的宽度；
         num_rows= 10 # number of terrain rows (levels)
         num_cols = 20 # number of terrain cols (types)
         # terrain types: [smooth slope, rough slope, stairs up, stairs down, discrete]
-        terrain_proportions = [0.1, 0.1, 0.35, 0.25, 0.2]
+        terrain_proportions = [0.1, 0.1, 0.35, 0.25, 0.2] # 控制训练采用的几种地形的比列，不知道时候是否强制需要相加为1？
         # trimesh only:
         slope_treshold = 0.75 # slopes above this threshold will be corrected to vertical surfaces
 

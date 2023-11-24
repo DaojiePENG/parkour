@@ -123,7 +123,7 @@ def play(args):
     env_cfg.termination.timeout_at_finished = False
     env_cfg.viewer.debug_viz = False # in a1_distill, setting this to true will constantly showing the egocentric depth view.
     env_cfg.viewer.draw_volume_sample_points = False
-    train_cfg.runner.resume = True
+    train_cfg.runner.resume = True # 设置这个值为 True 就会直接载入已经训练好的模型，而不是开启新的训练。
     train_cfg.runner_class_name = "OnPolicyRunner"
     if "distill" in args.task: # to save the memory
         train_cfg.algorithm.teacher_policy.sub_policy_paths = []
@@ -164,7 +164,7 @@ def play(args):
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)
     env.reset()
     print("terrain_levels:", env.terrain_levels.float().mean(), env.terrain_levels.float().max(), env.terrain_levels.float().min())
-    obs = env.get_observations()
+    obs = env.get_observations() # 这个 obs_buf 在 LeggedRobot 类中的 compute_observations 函数中进行定义;
     critic_obs = env.get_privileged_observations()
     # register debugging options to manually trigger disruption
     env.gym.subscribe_viewer_keyboard_event(env.viewer, isaacgym.gymapi.KEY_P, "push_robot")
@@ -228,7 +228,7 @@ def play(args):
         if "obs_slice" in locals().keys():
             obs_component = obs[:, obs_slice[0]].reshape(-1, *obs_slice[1])
             print(obs_component[robot_index])
-        actions = policy(obs.detach())
+        actions = policy(obs.detach()) # 使用策略计算动作，也就是赋值给电机的控制指令：‘P’，‘V’，‘T’等形式
         teacher_actions = actions
         obs, critic_obs, rews, dones, infos = env.step(actions.detach())
         if RECORD_FRAMES:
