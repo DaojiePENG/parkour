@@ -90,6 +90,7 @@ class A1CrawlCfgPPO( A1FieldCfgPPO ):
         resume = True
         load_run = "{Your traind walking model directory}"
         load_run = "{Your virtually trained crawling model directory}"
+        load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
         max_iterations = 20000
         save_interval = 500
     

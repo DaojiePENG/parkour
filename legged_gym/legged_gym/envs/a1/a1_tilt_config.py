@@ -99,6 +99,7 @@ class A1TiltCfgPPO( A1FieldCfgPPO ):
         load_run = "{Your virtual terrain model directory}"
         load_run = "Aug17_11-13-14_WalkingBase_pEnergySubsteps2e-5_aScale0.5"
         load_run = "Aug23_22-03-41_Skilltilt_pPenV3e-3_pPenD3e-3_tiltMax0.40_virtual"
+        load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
         max_iterations = 20000
         save_interval = 500
     

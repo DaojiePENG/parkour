@@ -107,6 +107,7 @@ class A1JumpCfgPPO( A1FieldCfgPPO ):
         resume = True
         load_run = "{Your traind walking model directory}"
         load_run = "{Your virtually trained jump model directory}"
+        load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
         
         run_name = "".join(["Skills_",
         ("jump" if A1JumpCfg.terrain.BarrierTrack_kwargs["jump"]["jump_down_prob"] < 1. else "down"),
