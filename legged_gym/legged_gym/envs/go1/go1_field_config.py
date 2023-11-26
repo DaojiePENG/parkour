@@ -23,10 +23,10 @@ class Go1FieldCfg( A1FieldCfg ):
         pos = [0., 0., 0.7]
         zero_actions = False
 
-    class sensor( A1FieldCfg.sensor ):
-        class proprioception( A1FieldCfg.sensor.proprioception ):
-            delay_action_obs = False
-            latency_range = [0.04-0.0025, 0.04+0.0075] # comment this if it is too hard to train.
+    # class sensor( A1FieldCfg.sensor ):
+    #     class proprioception( A1FieldCfg.sensor.proprioception ):
+    #         delay_action_obs = False
+    #         latency_range = [0.04-0.0025, 0.04+0.0075] # comment this if it is too hard to train.
 
     class terrain( A1FieldCfg.terrain ):
         num_rows = 20
