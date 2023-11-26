@@ -26,7 +26,7 @@ class A1LeapCfg( A1FieldCfg ):
                 depth= (0.4, 0.8),
                 height= 0.2,
             ),
-            virtual_terrain= False, # Change this to False for real terrain
+            virtual_terrain= True, # Change this to False for real terrain
             no_perlin_threshold= 0.06,
         ))
 
@@ -97,7 +97,7 @@ class A1LeapCfgPPO( A1FieldCfgPPO ):
         load_run = "{Your traind walking model directory}"
         load_run = "{Your virtually trained leap model directory}"
         load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
-        
+
         max_iterations = 20000
         save_interval = 500
     

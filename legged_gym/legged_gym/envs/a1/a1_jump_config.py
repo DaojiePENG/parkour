@@ -32,7 +32,7 @@ class A1JumpCfg( A1FieldCfg ):
                 fake_offset= 0.0, # [m] an offset that make the robot easier to get into the obstacle
                 jump_down_prob= 0., # probability of jumping down use it in non-virtual terrain
             ),
-            virtual_terrain= False, # Change this to False for real terrain
+            virtual_terrain= True, # Change this to False for real terrain
             no_perlin_threshold= 0.12,
             n_obstacles_per_track= 3,
         ))

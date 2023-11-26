@@ -27,7 +27,7 @@ class A1TiltCfg( A1FieldCfg ):
                 opening_angle= 0.0, # [rad] an opening that make the robot easier to get into the obstacle
                 wall_height= 0.5,
             ),
-            virtual_terrain= False, # Change this to False for real terrain
+            virtual_terrain= True, # Change this to False for real terrain
             no_perlin_threshold= 0.06,
         ))
 
