@@ -5,10 +5,10 @@ from legged_gym.utils.helpers import merge_dict
 class A1TiltCfg( A1FieldCfg ):
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( A1FieldCfg.sensor ):
-    #     class proprioception( A1FieldCfg.sensor.proprioception ):
-    #         delay_action_obs = True
-    #         latency_range = [0.04-0.0025, 0.04+0.0075]
+    class sensor( A1FieldCfg.sensor ):
+        class proprioception( A1FieldCfg.sensor.proprioception ):
+            delay_action_obs = True
+            latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
     class terrain( A1FieldCfg.terrain ):
@@ -27,7 +27,7 @@ class A1TiltCfg( A1FieldCfg ):
                 opening_angle= 0.0, # [rad] an opening that make the robot easier to get into the obstacle
                 wall_height= 0.5,
             ),
-            virtual_terrain= True, # Change this to False for real terrain
+            virtual_terrain= False, # Change this to False for real terrain
             no_perlin_threshold= 0.06,
         ))
 
@@ -52,7 +52,7 @@ class A1TiltCfg( A1FieldCfg ):
         ]
 
     class domain_rand( A1FieldCfg.domain_rand ):
-        # push_robots = True # use for virtual training
+        # push_robots = True # use for virtual training，这里本应该改变，但virtual训练的时候没改；
         push_robots = False # use for non-virtual training
 
     class rewards( A1FieldCfg.rewards ):
@@ -100,6 +100,7 @@ class A1TiltCfgPPO( A1FieldCfgPPO ):
         load_run = "Aug17_11-13-14_WalkingBase_pEnergySubsteps2e-5_aScale0.5"
         load_run = "Aug23_22-03-41_Skilltilt_pPenV3e-3_pPenD3e-3_tiltMax0.40_virtual"
         load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
+        load_run = "Nov26_18-17-04_Skilltilt_pPenV3e-3_pPenD3e-3_noPush_tiltMax0.40_virtual"
         max_iterations = 20000
         save_interval = 500
     

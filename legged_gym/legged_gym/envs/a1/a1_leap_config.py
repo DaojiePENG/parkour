@@ -5,10 +5,10 @@ from legged_gym.utils.helpers import merge_dict
 class A1LeapCfg( A1FieldCfg ):
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( A1FieldCfg.sensor ):
-    #     class proprioception( A1FieldCfg.sensor.proprioception ):
-    #         delay_action_obs = True
-    #         latency_range = [0.04-0.0025, 0.04+0.0075]
+    class sensor( A1FieldCfg.sensor ):
+        class proprioception( A1FieldCfg.sensor.proprioception ):
+            delay_action_obs = True
+            latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
     class terrain( A1FieldCfg.terrain ):
@@ -26,7 +26,7 @@ class A1LeapCfg( A1FieldCfg ):
                 depth= (0.4, 0.8),
                 height= 0.2,
             ),
-            virtual_terrain= True, # Change this to False for real terrain
+            virtual_terrain= False, # Change this to False for real terrain
             no_perlin_threshold= 0.06,
         ))
 
@@ -97,6 +97,7 @@ class A1LeapCfgPPO( A1FieldCfgPPO ):
         load_run = "{Your traind walking model directory}"
         load_run = "{Your virtually trained leap model directory}"
         load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
+        load_run = "Nov26_18-10-04_Skillleap_pEnergySubsteps-1e-06_virtual"
 
         max_iterations = 20000
         save_interval = 500

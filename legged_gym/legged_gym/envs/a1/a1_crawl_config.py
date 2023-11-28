@@ -28,7 +28,7 @@ class A1CrawlCfg( A1FieldCfg ):
                 wall_height= 0.6,
                 no_perlin_at_obstacle= False,
             ),
-            virtual_terrain= True, # Change this to False for real terrain
+            virtual_terrain= False, # Change this to False for real terrain
         ))
 
         TerrainPerlin_kwargs = merge_dict(A1FieldCfg.terrain.TerrainPerlin_kwargs, dict(
@@ -57,8 +57,8 @@ class A1CrawlCfg( A1FieldCfg ):
             world_vel_l2norm = -1.
             legs_energy_substeps = -2e-5
             alive = 2.
-            penetrate_depth = -6e-2 # comment this out if trianing non-virtual terrain
-            penetrate_volume = -6e-2 # comment this out if trianing non-virtual terrain
+            # penetrate_depth = -6e-2 # comment this out if trianing non-virtual terrain
+            # penetrate_volume = -6e-2 # comment this out if trianing non-virtual terrain
             exceed_dof_pos_limits = -1e-1
             exceed_torque_limits_i = -2e-1
 
@@ -91,6 +91,7 @@ class A1CrawlCfgPPO( A1FieldCfgPPO ):
         load_run = "{Your traind walking model directory}"
         load_run = "{Your virtually trained crawling model directory}"
         load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
+        load_run = "Nov26_17-42-51_Skillcrawl_pEnergy-2e-5_virtual"
         max_iterations = 20000
         save_interval = 500
     

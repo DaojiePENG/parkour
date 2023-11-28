@@ -9,9 +9,9 @@ class A1JumpCfg( A1FieldCfg ):
         pos = [0., 0., 0.45]
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( A1FieldCfg.sensor ):
-    #     class proprioception( A1FieldCfg.sensor.proprioception ):
-    #         latency_range = [0.04-0.0025, 0.04+0.0075]
+    class sensor( A1FieldCfg.sensor ):
+        class proprioception( A1FieldCfg.sensor.proprioception ):
+            latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
     class terrain( A1FieldCfg.terrain ):
@@ -26,13 +26,13 @@ class A1JumpCfg( A1FieldCfg ):
             ],
             track_block_length= 1.6,
             jump= dict(
-                height= (0.2, 0.6), # use this to train in virtual terrain
-                # height= (0.1, 0.5), # use this to train in non-virtual terrain
+                # height= (0.2, 0.6), # use this to train in virtual terrain
+                height= (0.1, 0.5), # use this to train in non-virtual terrain
                 depth= (0.1, 0.2),
                 fake_offset= 0.0, # [m] an offset that make the robot easier to get into the obstacle
                 jump_down_prob= 0., # probability of jumping down use it in non-virtual terrain
             ),
-            virtual_terrain= True, # Change this to False for real terrain
+            virtual_terrain= False, # Change this to False for real terrain
             no_perlin_threshold= 0.12,
             n_obstacles_per_track= 3,
         ))
@@ -108,6 +108,7 @@ class A1JumpCfgPPO( A1FieldCfgPPO ):
         load_run = "{Your traind walking model directory}"
         load_run = "{Your virtually trained jump model directory}"
         load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
+        load_run = "Nov26_17-29-57_Skills_jump_virtual_fromNov24_09-41-36"
         
         run_name = "".join(["Skills_",
         ("jump" if A1JumpCfg.terrain.BarrierTrack_kwargs["jump"]["jump_down_prob"] < 1. else "down"),
