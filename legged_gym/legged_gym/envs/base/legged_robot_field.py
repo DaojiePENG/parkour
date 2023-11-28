@@ -21,6 +21,10 @@ class LeggedRobotField(LeggedRobot):
     
     ##### adds-on with sensors #####
     def _create_sensors(self, env_handle=None, actor_handle= None):
+        '''
+        该函数创建机身传感器；会在 LeggedRobot._create_envs 中被调用生成传感器句柄表；
+        使用时针对 sensor_handle_dict ；
+        '''
         sensor_handle_dict = super()._create_sensors(
             env_handle= env_handle,
             actor_handle= actor_handle,
@@ -28,12 +32,20 @@ class LeggedRobotField(LeggedRobot):
         all_obs_components = self.all_obs_components
 
         if "forward_depth" in all_obs_components or "forward_color" in all_obs_components:
-            camera_handle = self._create_onboard_camera(env_handle, actor_handle, "forward_camera")
+            camera_handle = self._create_onboard_camera(env_handle, actor_handle, "forward_camera") # 在这里仅创建了机器人朝前的深度相机，具体定义见 _create_onboard_camera ；
             sensor_handle_dict["forward_camera"] = camera_handle
 
         return sensor_handle_dict
 
     def _create_onboard_camera(self, env_handle, actor_handle, sensor_name):
+        '''
+        主要实现两个定义一个结果：
+        1. camera_handle： 用于创建一定分辨率的相机（self.gym.create_camera_sensor）；
+        2. local_transform； 用于定义相机相对于身体的位置（gymapi.Quat.from_euler_zyx）；
+        3. 结果，将相机按定义添加到仿真中；（self.gym.attach_camera_to_body）；
+        
+        并且允许相机的位置和姿态一定程度随机化；
+        '''
         camera_props = gymapi.CameraProperties()
         camera_props.enable_tensors = True
         camera_props.height = getattr(self.cfg.sensor, sensor_name).resolution[0]
@@ -96,6 +108,9 @@ class LeggedRobotField(LeggedRobot):
 
     ##### Working on simulation steps #####
     def pre_physics_step(self, actions):
+        '''
+        物理仿真前处理，这里主要是选择某种方式对动作进行 clip 以防止输出过大的动作；
+        '''
         self.volume_sample_points_refreshed = False
         actions_preprocessed = False
         if isinstance(self.cfg.normalization.clip_actions, (tuple, list)):
@@ -583,6 +598,10 @@ class LeggedRobotField(LeggedRobot):
         return return_
 
     def _get_noise_scale_vec(self, cfg):
+        '''
+        按名称格式遍历调用所有预先定义的 noise 添加函数。具体函数实现在下面另外实现。
+        该函数在类中 _init_buffers 函数中被调用
+        '''
         noise_vec = torch.zeros_like(self.obs_buf[0])
         self.add_noise = cfg.noise.add_noise
         
@@ -739,6 +758,7 @@ class LeggedRobotField(LeggedRobot):
 
     ##### defines observation segments, which tells the order of the entire flattened obs #####
     def get_obs_segment_from_components(self, components):
+        '''根据情况添加不同的感知信息段和相应的感知信息数，以供计算观测信息数'''
         """ Observation segment is defined as a list of lists/ints defining the tensor shape with
         corresponding order.
         """
@@ -770,6 +790,7 @@ class LeggedRobotField(LeggedRobot):
         return segments
 
     def get_num_obs_from_components(self, components):
+        '''计算总共有多少观测值'''
         obs_segments = self.get_obs_segment_from_components(components)
         num_obs = 0
         for k, v in obs_segments.items():
@@ -777,6 +798,13 @@ class LeggedRobotField(LeggedRobot):
         return num_obs
 
     def refresh_volume_sample_points(self):
+        '''
+        实现了什么？为什么要实现它？
+        ：刷新了采样点量（self.velocity_sample_points, self.volume_sample_points），这两个变量在后续奖励计算中使用；
+        如何实现它？
+        ：
+        该函数主要在下面的奖励计算中使用到；
+        '''
         if self.volume_sample_points_refreshed:
             return
         sampled_body_pos = self.all_rigid_body_states[self.body_sample_indices, :3].view(self.num_envs, -1, 3)
@@ -794,19 +822,26 @@ class LeggedRobotField(LeggedRobot):
                 (point_positions[valid_velocity_mask] - self.volume_sample_points[valid_velocity_mask, sample_points_start_idx: sample_points_start_idx + num_volume_points]) / self.dt
             self.volume_sample_points[:, sample_points_start_idx: sample_points_start_idx + num_volume_points] = point_positions
             sample_points_start_idx += num_volume_points
-        self.volume_sample_points_refreshed = True
+        self.volume_sample_points_refreshed = True # 该值在物理前处理函数 pre_physics_step 中被重置为 False；
 
     def draw_volume_sample_points(self):
+        '''根据是否穿透绘制不同颜色的采样点
+        注：penetrate: 穿透；
+        '''
         sphere_geom = gymutil.WireframeSphereGeometry(0.005, 4, 4, None, color=(1, 0.1, 0))
         sphere_penetrate_geom = gymutil.WireframeSphereGeometry(0.005, 4, 4, None, color=(0.1, 0.6, 0.6))
         if self.cfg.terrain.selected == "BarrierTrack":
+            '''本来直接返回的点是(N,)，这里返回后又按 num_envs 变形为(num_envs, volume_sample_points)了'''
             penetration_mask = self.terrain.get_penetration_mask(self.volume_sample_points.view(-1, 3)).view(self.num_envs, -1)
         for env_idx in range(self.num_envs):
             for point_idx in range(self.volume_sample_points.shape[1]):
                 sphere_pose = gymapi.Transform(gymapi.Vec3(*self.volume_sample_points[env_idx, point_idx]), r= None)
                 if penetration_mask[env_idx, point_idx]:
+                    '''根据是否穿透绘制不同的颜色圆圈；
+                    如果是穿透情况就在相应的位置绘制穿透对应颜色的圆圈'''
                     gymutil.draw_lines(sphere_penetrate_geom, self.gym, self.viewer, self.envs[env_idx], sphere_pose)
                 else:
+                    '''非穿透状态下在采样点的位置绘制一种颜色的圆圈'''
                     gymutil.draw_lines(sphere_geom, self.gym, self.viewer, self.envs[env_idx], sphere_pose)
 
     ##### Additional rewards #####

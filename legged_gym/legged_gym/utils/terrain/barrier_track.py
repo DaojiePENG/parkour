@@ -946,6 +946,7 @@ class BarrierTrack:
 
         penetration_depths = torch.zeros_like(sample_points[:, 0]) # shape (N,)
         for obstacle_name, obstacle_id in self.track_options_id_dict.items():
+            '''通过名字遍历设置所有的穿透追踪深度'''
             point_masks = (block_infos[:, 0] == obstacle_id) & (in_track_mask)
             if not point_masks.any(): continue
             penetration_depths[point_masks] = getattr(self, "get_" + obstacle_name + "_penetration_depths")(
