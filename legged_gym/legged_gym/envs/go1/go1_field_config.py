@@ -114,7 +114,7 @@ class Go1FieldCfg( A1FieldCfg ):
         init_dof_vel_range = [-5, 5]
 
     class rewards( A1FieldCfg.rewards ):
-        only_positive_rewards = True # 按原来的定义直接运行 reward 总是 0 ，修改显示小数点位数后还是如此。根据作者提示，尝试不使用仅正奖励；
+        only_positive_rewards = False # 按原来的定义直接运行 reward 总是 0 ，修改显示小数点位数后还是如此。根据作者提示，尝试不使用仅正奖励；
         class scales:
             tracking_ang_vel = 0.05
             tracking_world_vel = 3.
@@ -191,7 +191,8 @@ class Go1FieldCfgPPO( A1FieldCfgPPO ):
         clip_min_std = 0.2
 
     class policy( A1FieldCfgPPO.policy ):
-        mu_activation = None # use action clip method by env
+        '''这里写了使用 env 的 mu_activation ；这跟a1有所不同，可能是导致收敛不理想的原因；'''
+        # mu_activation = None # use action clip method by env
 
     class runner( A1FieldCfgPPO.runner ):
         experiment_name = "field_go1"
