@@ -99,6 +99,7 @@ def play(args):
         env_cfg.terrain.num_rows = 1
         env_cfg.terrain.num_cols = 1
     env_cfg.terrain.curriculum = False
+    # play的时候需要在这里选择相应的地形，默认是jump；
     env_cfg.terrain.BarrierTrack_kwargs["options"] = [
         # "crawl",
         "jump",
@@ -107,7 +108,7 @@ def play(args):
     ]
     if "one_obstacle_per_track" in env_cfg.terrain.BarrierTrack_kwargs.keys():
         env_cfg.terrain.BarrierTrack_kwargs.pop("one_obstacle_per_track")
-    env_cfg.terrain.BarrierTrack_kwargs["n_obstacles_per_track"] = 2
+    env_cfg.terrain.BarrierTrack_kwargs["n_obstacles_per_track"] = 2 # 原来是 2 ， 这样跑 jump 和 crawl 会报错。问作者后说这个可以调整一下，变成 3 或者在 config 中强制为 2 ；
     env_cfg.commands.ranges.lin_vel_x = [1.2, 1.2]
     if "distill" in args.task:
         env_cfg.commands.ranges.lin_vel_x = [0.0, 0.0]
