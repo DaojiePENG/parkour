@@ -141,22 +141,23 @@ class Go1FieldCfg( A1FieldCfg ):
         max_contact_force = 200.0
         
     class normalization( A1FieldCfg.normalization ):
-        dof_pos_redundancy = 0.2
-        clip_actions_method = "hard"
-        clip_actions_low = []
-        clip_actions_high = []
-        for sdk_joint_name, sim_joint_name in zip(
-            ["Hip", "Thigh", "Calf"] * 4,
-            [ # in the order as simulation
-                "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
-                "FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
-                "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint",
-                "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
-            ],
-        ):
-            clip_actions_low.append( (go1_const_dof_range[sdk_joint_name + "_min"] + dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
-            clip_actions_high.append( (go1_const_dof_range[sdk_joint_name + "_max"] - dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
-        del dof_pos_redundancy, sdk_joint_name, sim_joint_name
+        '''不重写了，直接采用A1原来的试一试'''
+        # dof_pos_redundancy = 0.2
+        # clip_actions_method = "hard"
+        # clip_actions_low = []
+        # clip_actions_high = []
+        # for sdk_joint_name, sim_joint_name in zip(
+        #     ["Hip", "Thigh", "Calf"] * 4,
+        #     [ # in the order as simulation
+        #         "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
+        #         "FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
+        #         "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint",
+        #         "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
+        #     ],
+        # ):
+        #     clip_actions_low.append( (go1_const_dof_range[sdk_joint_name + "_min"] + dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
+        #     clip_actions_high.append( (go1_const_dof_range[sdk_joint_name + "_max"] - dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
+        # del dof_pos_redundancy, sdk_joint_name, sim_joint_name
 
     class sim( A1FieldCfg.sim ):
         body_measure_points = { # transform are related to body frame
