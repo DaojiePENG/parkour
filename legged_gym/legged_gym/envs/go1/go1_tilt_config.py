@@ -85,6 +85,7 @@ class Go1TiltCfgPPO( Go1FieldCfgPPO ):
         resume = True
         load_run = "{Your traind walking model directory}"
         load_run = "Sep20_03-37-32_SkillopensourcePlaneWalking_pEnergySubsteps1e-5_pTorqueExceedIndicate1e-1_aScale0.5_tClip202025"
+        load_run = "Dec01_17-24-33_SkillsPlaneWalking_pEnergySubsteps1e-5_pPenV5e-3_pPenD5e-3_rAngVel0.10_pTorqueExceedIndicate1e-1_pYaw0.50_aScale244_tClip202025"
         max_iterations = 20000
         save_interval = 500
 

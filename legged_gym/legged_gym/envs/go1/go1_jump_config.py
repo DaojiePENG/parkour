@@ -168,6 +168,7 @@ class Go1JumpCfgPPO( Go1FieldCfgPPO ):
         load_run = "Oct29_20-17-31_Skills_jump_pEnergySubsteps5e-05_rTrackVel4._pTorqueExceed1e+00_pTorque4e-04_noJumpBonous_propDelay0.04-0.05_noPropNoise_pushRobot_gamma0.999_noTanh_noComputerClip_jumpRange0.2-0.5_allowNegativeReward_fromOct29_16-37-44"
         load_run = "Oct30_11-11-43_Skills_jump_pEnergySubsteps6e-05_rTrackVel5._pY-8e-01_pTorqueExceed1.2e+00_pTorque4e-04_pDTorques1e-06_propDelay0.04-0.05_noPropNoise_pushRobot_gamma0.999_noTanh_noComputerClip_jumpRange0.2-0.5_allowNegativeReward_fromOct29_20-17-31"
         load_run = osp.join(logs_root, "field_go1_noTanh_oracle", "Oct30_13-00-12_Skills_jump_pEnergySubsteps6e-05_rTrackVel5._pY-4e-01_pTorqueExceed1.8e+00_pTorque4e-04_pDTorques1e-05_propDelay0.04-0.05_noPropNoise_noPush_gamma0.999_noTanh_noComputerClip_jumpRange0.2-0.5_allowNegativeReward_fromOct29_20-17-31")
+        load_run = "Dec01_17-24-33_SkillsPlaneWalking_pEnergySubsteps1e-5_pPenV5e-3_pPenD5e-3_rAngVel0.10_pTorqueExceedIndicate1e-1_pYaw0.50_aScale244_tClip202025"
 
         run_name = "".join(["Skills_",
         ("Multi" if len(Go1JumpCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else (Go1JumpCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1JumpCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),

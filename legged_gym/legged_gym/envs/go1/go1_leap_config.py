@@ -146,6 +146,7 @@ class Go1LeapCfgPPO( Go1FieldCfgPPO ):
         load_run = "Oct30_05-08-03_Skills_leap_pEnertySubsteps6.e-6_rTrackVel5._pTorqueExceed4.e-1_pPosY4.e-1_pTorques4.e-5_pHipPos5.e+0_noPenCurriculum_noComputerClip_noTanh_noPush_allowNegativeReward_actionCliphard_virtual_fromOct30_04-10-12"
         load_run = "Oct30_05-08-20_Skills_leap_pEnertySubsteps6.e-6_rTrackVel5._pTorqueExceed5.e-1_pPosY4.e-1_pTorques4.e-5_pHipPos5.e+0_noPenCurriculum_noComputerClip_noTanh_noPush_allowNegativeReward_actionCliphard_virtual_fromOct30_04-10-12"
         load_run = "Oct30_07-32-10_Skills_leap_pEnertySubsteps6.e-6_rTrackVel5._pTorqueExceed8.e-1_pPosY4.e-1_pTorques4.e-5_pHipPos5.e+0_pDorErr1.5e-1_noPenCurriculum_noCurriculum_noComputerClip_noTanh_noPush_allowNegativeReward_actionCliphard_virtual_fromOct30_05-07-24"
+        load_run = "Dec01_17-24-33_SkillsPlaneWalking_pEnergySubsteps1e-5_pPenV5e-3_pPenD5e-3_rAngVel0.10_pTorqueExceedIndicate1e-1_pYaw0.50_aScale244_tClip202025"
 
         run_name = "".join(["Skills_",
         ("Multi" if len(Go1LeapCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else (Go1LeapCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1LeapCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),

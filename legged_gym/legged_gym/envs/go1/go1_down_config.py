@@ -132,6 +132,7 @@ class Go1DownCfgPPO( Go1FieldCfgPPO ):
         load_run = osp.join(logs_root, "field_go1_noTanh_oracle", "Oct28_13-08-21_Skills_down_pEnergySubsteps-4e-05_rTrackVel5._pHipPos8e-01_rDownCond4.e-2_withPropNoise_noTanh_virtualfromOct28_07-38-39")
         load_run = "Oct29_22-07-51_Skills_down_pEnergySubsteps-4e-05_rTrackVel5._pHipPos8e-01_rDownCond4.e-2_noComputerClip_noPropNoise_noTanh_virtualfromOct28_13-08-21"
         load_run = "Oct30_04-23-31_Skills_down_pEnergySubsteps-1e-05_rTrackVel5._pTorqueL14e-01_pHipPos5e+00_rDownCond4.e-2_allowNegativeReward_pushRobot_noComputerClip_noPropNoise_noTanh_virtual_fromOct29_22-07-51"
+        load_run = "Dec01_17-24-33_SkillsPlaneWalking_pEnergySubsteps1e-5_pPenV5e-3_pPenD5e-3_rAngVel0.10_pTorqueExceedIndicate1e-1_pYaw0.50_aScale244_tClip202025"
 
         run_name = "".join(["Skills_",
         ("down" if Go1DownCfg.terrain.BarrierTrack_kwargs["jump"]["jump_down_prob"] > 0. else "jump"),

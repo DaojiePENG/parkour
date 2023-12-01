@@ -114,6 +114,7 @@ class Go1CrawlCfgPPO( Go1FieldCfgPPO ):
         load_run = "Sep20_03-37-32_SkillopensourcePlaneWalking_pEnergySubsteps1e-5_pTorqueExceedIndicate1e-1_aScale0.5_tClip202025"
         load_run = osp.join(logs_root, "field_a1_noTanh_oracle", "Sep26_14-30-24_Skills_crawl_propDelay0.04-0.05_pEnergy-2e-5_pDof8e-01_pTorqueL14e-01_rTilt5e-01_pCollision0.2_maxPushAng0.5_kp40_fromSep26_01-38-19")
         load_run = osp.join(logs_root, "field_a1_noTanh_oracle", "Oct11_12-19-00_Skills_crawl_propDelay0.04-0.05_pEnergy-1e-5_pDof8e-01_pTorqueL14e-01_pPosY0.1_maxPushAng0.3_kp40_fromOct09_09-58-26")
+        load_run = "Dec01_17-24-33_SkillsPlaneWalking_pEnergySubsteps1e-5_pPenV5e-3_pPenD5e-3_rAngVel0.10_pTorqueExceedIndicate1e-1_pYaw0.50_aScale244_tClip202025"
 
         run_name = "".join(["Skills_",
         ("Multi" if len(Go1CrawlCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else (Go1CrawlCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1CrawlCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
