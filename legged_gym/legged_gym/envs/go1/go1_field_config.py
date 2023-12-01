@@ -23,10 +23,10 @@ class Go1FieldCfg( A1FieldCfg ):
         pos = [0., 0., 0.7]
         zero_actions = False
 
-    # class sensor( A1FieldCfg.sensor ):
-    #     class proprioception( A1FieldCfg.sensor.proprioception ):
-    #         delay_action_obs = False
-    #         latency_range = [0.04-0.0025, 0.04+0.0075] # comment this if it is too hard to train.
+    class sensor( A1FieldCfg.sensor ):
+        class proprioception( A1FieldCfg.sensor.proprioception ):
+            delay_action_obs = False
+            latency_range = [0.04-0.0025, 0.04+0.0075] # comment this if it is too hard to train.
 
     class terrain( A1FieldCfg.terrain ):
         num_rows = 20
@@ -142,22 +142,22 @@ class Go1FieldCfg( A1FieldCfg ):
         
     class normalization( A1FieldCfg.normalization ):
         '''不重写了，直接采用A1原来的试一试'''
-        # dof_pos_redundancy = 0.2
-        # clip_actions_method = "hard"
-        # clip_actions_low = []
-        # clip_actions_high = []
-        # for sdk_joint_name, sim_joint_name in zip(
-        #     ["Hip", "Thigh", "Calf"] * 4,
-        #     [ # in the order as simulation
-        #         "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
-        #         "FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
-        #         "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint",
-        #         "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
-        #     ],
-        # ):
-        #     clip_actions_low.append( (go1_const_dof_range[sdk_joint_name + "_min"] + dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
-        #     clip_actions_high.append( (go1_const_dof_range[sdk_joint_name + "_max"] - dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
-        # del dof_pos_redundancy, sdk_joint_name, sim_joint_name
+        dof_pos_redundancy = 0.2
+        clip_actions_method = "hard"
+        clip_actions_low = []
+        clip_actions_high = []
+        for sdk_joint_name, sim_joint_name in zip(
+            ["Hip", "Thigh", "Calf"] * 4,
+            [ # in the order as simulation
+                "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
+                "FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
+                "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint",
+                "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint",
+            ],
+        ):
+            clip_actions_low.append( (go1_const_dof_range[sdk_joint_name + "_min"] + dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
+            clip_actions_high.append( (go1_const_dof_range[sdk_joint_name + "_max"] - dof_pos_redundancy - A1FieldCfg.init_state.default_joint_angles[sim_joint_name]) / go1_action_scale )
+        del dof_pos_redundancy, sdk_joint_name, sim_joint_name
 
     class sim( A1FieldCfg.sim ):
         body_measure_points = { # transform are related to body frame
@@ -193,12 +193,13 @@ class Go1FieldCfgPPO( A1FieldCfgPPO ):
 
     class policy( A1FieldCfgPPO.policy ):
         '''这里写了使用 env 的 mu_activation ；这跟a1有所不同，可能是导致收敛不理想的原因；'''
-        # mu_activation = None # use action clip method by env
+        mu_activation = None # use action clip method by env
 
     class runner( A1FieldCfgPPO.runner ):
         experiment_name = "field_go1"
-        resume = False
+        resume = True # 使用初始化参数
         load_run = None
+        load_run = "Nov24_09-41-36_WalkForward_aScale0.5" # 尝试将 a1 的field作为初始参数给 go1 训练；
         
         run_name = "".join(["WalkForward",
         ("_pEnergySubsteps" + np.format_float_scientific(-Go1FieldCfg.rewards.scales.legs_energy_substeps, trim= "-", exp_digits= 1) if getattr(Go1FieldCfg.rewards.scales, "legs_energy_substeps", 0.0) != 0.0 else ""),
