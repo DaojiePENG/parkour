@@ -249,12 +249,19 @@ class A1FieldDistillCfgPPO( A1FieldCfgPPO ):
             env_action_scale = A1FieldCfg.control.action_scale
 
             sub_policy_class_name = "ActorCriticRecurrent"
-            sub_policy_paths = [ # must in the order of obstacle ID, Replace the folder name with your own training logdir
+            '''
                 os.path.join(logs_root, "field_a1/{your walking policy}"),
                 os.path.join(logs_root, "field_a1/{your tilting policy}"),
                 os.path.join(logs_root, "field_a1/{your crawling policy}"),
                 os.path.join(logs_root, "field_a1/{your climbing policy}"),
                 os.path.join(logs_root, "field_a1/{your leaping policy}"),
+            '''
+            sub_policy_paths = [ # must in the order of obstacle ID, Replace the folder name with your own training logdir
+                os.path.join(logs_root, "field_a1/Nov24_09-41-36_WalkForward_aScale0.5"),
+                os.path.join(logs_root, "field_a1/Nov28_12-06-20_Skilltilt_pPenV3e-3_pPenD3e-3_noPush_tiltMax0.40"),
+                os.path.join(logs_root, "field_a1/Nov28_11-59-57_Skillcrawl_pEnergy-2e-5"),
+                os.path.join(logs_root, "field_a1/Nov28_11-59-38_Skills_jump_fromNov26_17-29-57"),
+                os.path.join(logs_root, "field_a1/Nov28_12-06-16_Skillleap_pEnergySubsteps-1e-06"),
             ]
             climb_down_policy_path = os.path.join(logs_root, "field_a1/{your climbing down policy}")
             cmd_vel_mapping = {
