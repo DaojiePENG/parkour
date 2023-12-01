@@ -1,24 +1,24 @@
 from os import path as osp
 import numpy as np
-from legged_gym.envs.go1.go1_field_config import Go1FieldCfg, Go1FieldCfgPPO
+from legged_gym.envs.go1.go1_field_config import Go1FieldHisCfg, Go1FieldHisCfgPPO
 from legged_gym.utils.helpers import merge_dict
 
-class Go1TiltCfg( Go1FieldCfg ):
+class Go1TiltCfg( Go1FieldHisCfg ):
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( Go1FieldCfg.sensor ):
-    #     class proprioception( Go1FieldCfg.sensor.proprioception ):
+    # class sensor( Go1FieldHisCfg.sensor ):
+    #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
     #         delay_action_obs = True
     #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
-    class terrain( Go1FieldCfg.terrain ):
+    class terrain( Go1FieldHisCfg.terrain ):
         max_init_terrain_level = 2
         border_size = 5
         slope_treshold = 20.
         curriculum = True
 
-        BarrierTrack_kwargs = merge_dict(Go1FieldCfg.terrain.BarrierTrack_kwargs, dict(
+        BarrierTrack_kwargs = merge_dict(Go1FieldHisCfg.terrain.BarrierTrack_kwargs, dict(
             options= [
                 "tilt",
             ],
@@ -32,17 +32,17 @@ class Go1TiltCfg( Go1FieldCfg ):
             no_perlin_threshold= 0.06,
         ))
 
-        TerrainPerlin_kwargs = merge_dict(Go1FieldCfg.terrain.TerrainPerlin_kwargs, dict(
+        TerrainPerlin_kwargs = merge_dict(Go1FieldHisCfg.terrain.TerrainPerlin_kwargs, dict(
             zScale= [0.05, 0.1],
         ))
 
-    class commands( Go1FieldCfg.commands ):
-        class ranges( Go1FieldCfg.commands.ranges ):
+    class commands( Go1FieldHisCfg.commands ):
+        class ranges( Go1FieldHisCfg.commands.ranges ):
             lin_vel_x = [0.3, 0.6]
             lin_vel_y = [0.0, 0.0]
             ang_vel_yaw = [0., 0.]
 
-    class termination( Go1FieldCfg.termination ):
+    class termination( Go1FieldHisCfg.termination ):
         # additional factors that determines whether to terminates the episode
         termination_terms = [
             "roll",
@@ -51,15 +51,15 @@ class Go1TiltCfg( Go1FieldCfg ):
             "z_high",
             "out_of_track",
         ]
-        roll_kwargs = merge_dict(Go1FieldCfg.termination.roll_kwargs, dict(
+        roll_kwargs = merge_dict(Go1FieldHisCfg.termination.roll_kwargs, dict(
             threshold= 0.4,
             leap_threshold= 0.4,
         ))
-        z_high_kwargs = merge_dict(Go1FieldCfg.termination.z_high_kwargs, dict(
+        z_high_kwargs = merge_dict(Go1FieldHisCfg.termination.z_high_kwargs, dict(
             threshold= 2.0,
         ))
 
-    class rewards( Go1FieldCfg.rewards ):
+    class rewards( Go1FieldHisCfg.rewards ):
         class scales:
             tracking_ang_vel = 0.05
             world_vel_l2norm = -1.
@@ -70,14 +70,14 @@ class Go1TiltCfg( Go1FieldCfg ):
             exceed_dof_pos_limits = -1e-1
             exceed_torque_limits_i = -1e-1
 
-    class curriculum( Go1FieldCfg.curriculum ):
+    class curriculum( Go1FieldHisCfg.curriculum ):
         penetrate_volume_threshold_harder = 9000
         penetrate_volume_threshold_easier = 10000
         penetrate_depth_threshold_harder = 300
         penetrate_depth_threshold_easier = 5000
 
-class Go1TiltCfgPPO( Go1FieldCfgPPO ):    
-    class runner( Go1FieldCfgPPO.runner ):
+class Go1TiltCfgPPO( Go1FieldHisCfgPPO ):    
+    class runner( Go1FieldHisCfgPPO.runner ):
         run_name = "".join(["Skill",
         ("Multi" if len(Go1TiltCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else (Go1TiltCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1TiltCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
         ("_tiltMax{:.1f}".format(Go1TiltCfg.terrain.BarrierTrack_kwargs["tilt"]["width"][1]) if Go1TiltCfg.terrain.BarrierTrack_kwargs["tilt"]["width"][1] > 0.5 else ""),
