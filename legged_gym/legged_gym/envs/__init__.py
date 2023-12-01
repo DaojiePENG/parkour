@@ -86,3 +86,7 @@ from .go1.go1_crawl_config import Go1CrawlCfg, Go1CrawlCfgPPO
 task_registry.register( "go1_crawl", LeggedRobotNoisy, Go1CrawlCfg(), Go1CrawlCfgPPO() )
 from .go1.go1_tilt_config import Go1TiltCfg, Go1TiltCfgPPO
 task_registry.register( "go1_tilt", LeggedRobotNoisy, Go1TiltCfg(), Go1TiltCfgPPO() )
+
+# added from history go1_field_config for training
+from .go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
+task_registry.register( "go1_field_his", LeggedRobotNoisy, Go1FieldHisCfg(), Go1FieldHisCfgPPO())
