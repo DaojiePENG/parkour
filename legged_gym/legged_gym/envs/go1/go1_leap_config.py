@@ -9,10 +9,10 @@ class Go1LeapCfg( Go1FieldHisCfg ):
         pos = [0., 0., 0.4]
 
     #### uncomment this to train non-virtual terrain
-    class sensor( Go1FieldHisCfg.sensor ):
-        class proprioception( Go1FieldHisCfg.sensor.proprioception ):
-            latency_range = [0.04-0.0025, 0.04+0.0075]
-            # latency_range = [0.06-0.005, 0.06+0.005]
+    # class sensor( Go1FieldHisCfg.sensor ):
+    #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
+    #         latency_range = [0.04-0.0025, 0.04+0.0075]
+    #         # latency_range = [0.06-0.005, 0.06+0.005]
     #### uncomment the above to train non-virtual terrain
     
     class terrain( Go1FieldHisCfg.terrain ):

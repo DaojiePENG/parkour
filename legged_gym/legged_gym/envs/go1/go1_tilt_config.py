@@ -8,7 +8,7 @@ class Go1TiltCfg( Go1FieldHisCfg ):
     #### uncomment this to train non-virtual terrain
     # class sensor( Go1FieldHisCfg.sensor ):
     #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
-    #         delay_action_obs = True
+    #         # delay_action_obs = True
     #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     

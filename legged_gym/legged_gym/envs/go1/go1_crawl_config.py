@@ -8,9 +8,9 @@ class Go1CrawlCfg( Go1FieldHisCfg ):
         pos = [0., 0., 0.45]
 
     #### uncomment this to train non-virtual terrain
-    class sensor( Go1FieldHisCfg.sensor ):
-        class proprioception( Go1FieldHisCfg.sensor.proprioception ):
-            latency_range = [0.04-0.0025, 0.04+0.0075]
+    # class sensor( Go1FieldHisCfg.sensor ):
+    #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
+    #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
     class terrain( Go1FieldHisCfg.terrain ):
@@ -30,7 +30,7 @@ class Go1CrawlCfg( Go1FieldHisCfg ):
                 wall_height= 0.6,
                 no_perlin_at_obstacle= False,
             ),
-            virtual_terrain= False, # Change this to False for real terrain
+            virtual_terrain= True, # Change this to False for real terrain
         ))
 
         TerrainPerlin_kwargs = merge_dict(Go1FieldHisCfg.terrain.TerrainPerlin_kwargs, dict(

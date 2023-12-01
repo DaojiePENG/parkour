@@ -9,9 +9,9 @@ class Go1JumpCfg( Go1FieldHisCfg ):
         pos = [0., 0., 0.45]
 
     #### uncomment this to train non-virtual terrain
-    class sensor( Go1FieldHisCfg.sensor ):
-        class proprioception( Go1FieldHisCfg.sensor.proprioception ):
-            latency_range = [0.04-0.0025, 0.04+0.0075]
+    # class sensor( Go1FieldHisCfg.sensor ):
+    #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
+    #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
     class terrain( Go1FieldHisCfg.terrain ):
@@ -34,7 +34,7 @@ class Go1JumpCfg( Go1FieldHisCfg ):
                 fake_offset= 0.0, # [m] an offset that make the robot easier to get into the obstacle
                 jump_down_prob= 0., # probability of jumping down use it in non-virtual terrain
             ),
-            virtual_terrain= False, # Change this to False for real terrain
+            virtual_terrain= True, # Change this to False for real terrain
             no_perlin_threshold= 0.06,
             randomize_obstacle_order= True,
             n_obstacles_per_track= 3,
