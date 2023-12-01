@@ -167,7 +167,7 @@ class LeggedRobotField(LeggedRobot):
         r, p, y = get_euler_xyz(self.base_quat)
         r[r > np.pi] -= np.pi * 2 # to range (-pi, pi)
         p[p > np.pi] -= np.pi * 2 # to range (-pi, pi)
-        z = self.root_states[:, 2] - self.env_origins[:, 2]
+        z = self.root_states[:, 2] - self.env_origins[:, 2] # root_states 是机器人的本体位置； env_origins 是每个小地形块中心坐标；
 
         if getattr(self.cfg.termination, "check_obstacle_conditioned_threshold", False) and self.check_BarrierTrack_terrain():
             if hasattr(self, "volume_sample_points"):
@@ -175,11 +175,12 @@ class LeggedRobotField(LeggedRobot):
                 stepping_obstacle_info = self.terrain.get_stepping_obstacle_info(self.volume_sample_points.view(-1, 3))
             else:
                 stepping_obstacle_info = self.terrain.get_stepping_obstacle_info(self.root_states[:, :3])
-            stepping_obstacle_info = stepping_obstacle_info.view(self.num_envs, -1, stepping_obstacle_info.shape[-1])
+            stepping_obstacle_info = stepping_obstacle_info.view(self.num_envs, -1, stepping_obstacle_info.shape[-1]) # 将观测点按 num_envs 的行形状进行转化，方便使用；
             # Assuming that each robot will only be in one obstacle or non obstacle.
             robot_stepping_obstacle_id = torch.max(stepping_obstacle_info[:, :, 0], dim= -1)[0]
         
         if "roll" in self.cfg.termination.termination_terms:
+            '''可以针对一些地形单独定义相关的终止条件'''
             if "robot_stepping_obstacle_id" in locals():
                 r_term_buff = torch.abs(r[robot_stepping_obstacle_id == 0]) > \
                     self.cfg.termination.roll_kwargs["threshold"]
@@ -192,8 +193,9 @@ class LeggedRobotField(LeggedRobot):
                         self.reset_buf[env_selection_mask] |= r_term_buff
             else:
                 r_term_buff = torch.abs(r) > self.cfg.termination.roll_kwargs["threshold"]
-                self.reset_buf |= r_term_buff
+                self.reset_buf |= r_term_buff # 根据 roll 的检测结果调节真值；
         if "pitch" in self.cfg.termination.termination_terms:
+            '''可以针对一些地形单独定义相关的终止条件'''
             if "robot_stepping_obstacle_id" in locals():
                 p_term_buff = torch.abs(p[robot_stepping_obstacle_id == 0]) > \
                     self.cfg.termination.pitch_kwargs["threshold"]
@@ -206,8 +208,9 @@ class LeggedRobotField(LeggedRobot):
                         self.reset_buf[env_selection_mask] |= p_term_buff
             else:
                 p_term_buff = torch.abs(p) > self.cfg.termination.pitch_kwargs["threshold"]
-                self.reset_buf |= p_term_buff
+                self.reset_buf |= p_term_buff # 根据 pitch 的检测结果调节真值；
         if "z_low" in self.cfg.termination.termination_terms:
+            '''可以针对一些地形单独定义相关的终止条件'''
             if "robot_stepping_obstacle_id" in locals():
                 z_low_term_buff = z[robot_stepping_obstacle_id == 0] < \
                     self.cfg.termination.z_low_kwargs["threshold"]
@@ -217,13 +220,13 @@ class LeggedRobotField(LeggedRobot):
                         env_selection_mask = robot_stepping_obstacle_id == obstacle_id
                         z_low_term_buff = z[env_selection_mask] < \
                             self.cfg.termination.z_low_kwargs[obstacle_name + "_threshold"]
-                        self.reset_buf[env_selection_mask] |= z_low_term_buff
+                        self.reset_buf[env_selection_mask] |= z_low_term_buff # 根据 z 的检测结果调节真值；
             else:
                 z_low_term_buff = z < self.cfg.termination.z_low_kwargs["threshold"]
-                self.reset_buf |= z_low_term_buff
+                self.reset_buf |= z_low_term_buff # 根据 z 的检测结果调节真值；
         if "z_high" in self.cfg.termination.termination_terms:
             z_high_term_buff = z > self.cfg.termination.z_high_kwargs["threshold"]
-            self.reset_buf |= z_high_term_buff
+            self.reset_buf |= z_high_term_buff # 根据 z 的检测结果调节真值；
         if "out_of_track" in self.cfg.termination.termination_terms and self.check_BarrierTrack_terrain():
             # robot considered dead if it goes side ways
             side_distance = self.terrain.get_sidewall_distance(self.root_states[:, :3])
