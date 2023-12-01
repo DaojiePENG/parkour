@@ -6,9 +6,9 @@ from legged_gym.utils.helpers import merge_dict
 class A1DownCfg( A1FieldCfg ):
 
     #### uncomment this to train non-virtual terrain
-    class sensor( A1FieldCfg.sensor ):
-        class proprioception( A1FieldCfg.sensor.proprioception ):
-            latency_range = [0.04-0.0025, 0.04+0.0075]
+    # class sensor( A1FieldCfg.sensor ):
+    #     class proprioception( A1FieldCfg.sensor.proprioception ):
+    #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
 
     class terrain( A1FieldCfg.terrain ):
@@ -105,6 +105,7 @@ class A1DownCfgPPO( A1FieldCfgPPO ):
         experiment_name = "field_a1"
         resume = True
         load_run = "{Your trained walk model directory}"
+        load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
 
         run_name = "".join(["Skills_",
         ("down" if A1DownCfg.terrain.BarrierTrack_kwargs["jump"]["jump_down_prob"] > 0. else "jump"),
