@@ -6,9 +6,9 @@ from legged_gym.utils.helpers import merge_dict
 class A1DownCfg( A1FieldCfg ):
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( A1FieldCfg.sensor ):
-    #     class proprioception( A1FieldCfg.sensor.proprioception ):
-    #         latency_range = [0.04-0.0025, 0.04+0.0075]
+    class sensor( A1FieldCfg.sensor ):
+        class proprioception( A1FieldCfg.sensor.proprioception ):
+            latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
 
     class terrain( A1FieldCfg.terrain ):
@@ -28,7 +28,7 @@ class A1DownCfg( A1FieldCfg ):
                 fake_offset= 0.0, # [m] an offset that make the robot easier to get into the obstacle
                 jump_down_prob= 1., # probability of jumping down use it in non-virtual terrain
             ),
-            virtual_terrain= True, # Change this to False for real terrain
+            virtual_terrain= False, # Change this to False for real terrain
             no_perlin_threshold= 0.1,
             n_obstacles_per_track= 3,
         ))
@@ -106,6 +106,7 @@ class A1DownCfgPPO( A1FieldCfgPPO ):
         resume = True
         load_run = "{Your trained walk model directory}"
         load_run = "Nov24_09-41-36_WalkForward_aScale0.5"
+        load_run = "Dec01_15-35-27_Skills_downfromNov24_09-41-36"
 
         run_name = "".join(["Skills_",
         ("down" if A1DownCfg.terrain.BarrierTrack_kwargs["jump"]["jump_down_prob"] > 0. else "jump"),
