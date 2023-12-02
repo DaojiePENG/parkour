@@ -1,7 +1,7 @@
 import numpy as np
 import os.path as osp
 from legged_gym.utils.helpers import merge_dict
-from legged_gym.envs.go1.go1_field_config_his import Go1FieldCfg, Go1FieldCfgPPO
+from legged_gym.envs.go1.go1_field_config import Go1FieldCfg, Go1FieldCfgPPO
 
 class Go1RemoteCfg( Go1FieldCfg ):
     class env( Go1FieldCfg.env ):
