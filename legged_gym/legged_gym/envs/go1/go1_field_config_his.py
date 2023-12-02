@@ -143,7 +143,7 @@ class Go1FieldHisCfg( A1FieldCfg ):
             z = [-0.05, 0.05]
         
         randomize_base_mass = True
-        init_base_vel_range = [-1.0, 1.0]
+        # init_base_vel_range = [-1.0, 1.0]
         added_mass_range = [1.0, 3.0]
 
     class rewards( A1FieldCfg.rewards ):

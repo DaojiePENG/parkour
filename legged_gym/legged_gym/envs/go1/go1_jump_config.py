@@ -1,26 +1,26 @@
 from os import path as osp
 import numpy as np
-from legged_gym.envs.go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
+from legged_gym.envs.go1.go1_field_config_his import Go1FieldCfg, Go1FieldCfgPPO
 from legged_gym.utils.helpers import merge_dict
 
-class Go1JumpCfg( Go1FieldHisCfg ):
+class Go1JumpCfg( Go1FieldCfg ):
 
-    class init_state( Go1FieldHisCfg.init_state ):
+    class init_state( Go1FieldCfg.init_state ):
         pos = [0., 0., 0.45]
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( Go1FieldHisCfg.sensor ):
-    #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
+    # class sensor( Go1FieldCfg.sensor ):
+    #     class proprioception( Go1FieldCfg.sensor.proprioception ):
     #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #### uncomment the above to train non-virtual terrain
     
-    class terrain( Go1FieldHisCfg.terrain ):
+    class terrain( Go1FieldCfg.terrain ):
         max_init_terrain_level = 10
         border_size = 5
         slope_treshold = 20.
         curriculum = True
 
-        BarrierTrack_kwargs = merge_dict(Go1FieldHisCfg.terrain.BarrierTrack_kwargs, dict(
+        BarrierTrack_kwargs = merge_dict(Go1FieldCfg.terrain.BarrierTrack_kwargs, dict(
             options= [
                 "jump",
             ],
@@ -40,24 +40,24 @@ class Go1JumpCfg( Go1FieldHisCfg ):
             n_obstacles_per_track= 3,
         ))
 
-        TerrainPerlin_kwargs = merge_dict(Go1FieldHisCfg.terrain.TerrainPerlin_kwargs, dict(
+        TerrainPerlin_kwargs = merge_dict(Go1FieldCfg.terrain.TerrainPerlin_kwargs, dict(
             zScale= [0.05, 0.12],
         ))
 
-    class commands( Go1FieldHisCfg.commands ):
-        class ranges( Go1FieldHisCfg.commands.ranges ):
+    class commands( Go1FieldCfg.commands ):
+        class ranges( Go1FieldCfg.commands.ranges ):
             lin_vel_x = [0.5, 1.5]
             lin_vel_y = [0.0, 0.0]
             ang_vel_yaw = [0., 0.]
 
-    class control( Go1FieldHisCfg.control ):
+    class control( Go1FieldCfg.control ):
         computer_clip_torque = False
 
-    class asset( Go1FieldHisCfg.asset ):
+    class asset( Go1FieldCfg.asset ):
         penalize_contacts_on = ["base", "thigh", "calf", "imu"]
         terminate_after_contacts_on = ["base"]
 
-    class termination( Go1FieldHisCfg.termination ):
+    class termination( Go1FieldCfg.termination ):
         # additional factors that determines whether to terminates the episode
         termination_terms = [
             "roll",
@@ -68,8 +68,8 @@ class Go1JumpCfg( Go1FieldHisCfg ):
         timeout_at_finished = True
         timeout_at_border = True
 
-    class domain_rand( Go1FieldHisCfg.domain_rand ):
-        class com_range( Go1FieldHisCfg.domain_rand.com_range ):
+    class domain_rand( Go1FieldCfg.domain_rand ):
+        class com_range( Go1FieldCfg.domain_rand.com_range ):
             z = [-0.1, 0.1]
         
         init_base_pos_range = dict(
@@ -83,7 +83,7 @@ class Go1JumpCfg( Go1FieldHisCfg ):
 
         push_robots = True
 
-    class rewards( Go1FieldHisCfg.rewards ):
+    class rewards( Go1FieldCfg.rewards ):
         class scales:
             tracking_ang_vel = 0.08
             # alive = 10.
@@ -111,22 +111,22 @@ class Go1JumpCfg( Go1FieldHisCfg ):
         max_contact_force = 100.
         tracking_sigma = 0.3
 
-    class noise( Go1FieldHisCfg.noise ):
+    class noise( Go1FieldCfg.noise ):
         add_noise = False
 
-    class curriculum( Go1FieldHisCfg.curriculum ):
+    class curriculum( Go1FieldCfg.curriculum ):
         penetrate_volume_threshold_harder = 6000
         penetrate_volume_threshold_easier = 12000
         penetrate_depth_threshold_harder = 600
         penetrate_depth_threshold_easier = 1200
 
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
-class Go1JumpCfgPPO( Go1FieldHisCfgPPO ):
-    class algorithm( Go1FieldHisCfgPPO.algorithm ):
+class Go1JumpCfgPPO( Go1FieldCfgPPO ):
+    class algorithm( Go1FieldCfgPPO.algorithm ):
         entropy_coef = 0.01
         clip_min_std = 0.21
     
-    class runner( Go1FieldHisCfgPPO.runner ):
+    class runner( Go1FieldCfgPPO.runner ):
         resume = True
         load_run = "{Your traind walking model directory}"
         # load_run = "Sep20_03-37-32_SkillopensourcePlaneWalking_pEnergySubsteps1e-5_pTorqueExceedIndicate1e-1_aScale0.5_tClip202025"

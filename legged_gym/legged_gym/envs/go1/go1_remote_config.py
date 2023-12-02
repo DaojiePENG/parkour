@@ -1,10 +1,10 @@
 import numpy as np
 import os.path as osp
 from legged_gym.utils.helpers import merge_dict
-from legged_gym.envs.go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
+from legged_gym.envs.go1.go1_field_config_his import Go1FieldCfg, Go1FieldCfgPPO
 
-class Go1RemoteCfg( Go1FieldHisCfg ):
-    class env( Go1FieldHisCfg.env ):
+class Go1RemoteCfg( Go1FieldCfg ):
+    class env( Go1FieldCfg.env ):
         num_envs = 4096
         obs_components = [
             "proprioception", # 48
@@ -16,10 +16,10 @@ class Go1RemoteCfg( Go1FieldHisCfg ):
         use_lin_vel = False
         privileged_use_lin_vel = True
 
-    class init_state( Go1FieldHisCfg.init_state ):
+    class init_state( Go1FieldCfg.init_state ):
         pos = [0., 0., 0.42]
 
-    class terrain( Go1FieldHisCfg.terrain ):
+    class terrain( Go1FieldCfg.terrain ):
         num_rows = 6
         num_cols = 6
         selected = "TerrainPerlin"
@@ -28,13 +28,13 @@ class Go1RemoteCfg( Go1FieldHisCfg ):
             frequency= 10,
         )
 
-    class commands( Go1FieldHisCfg.commands ):
-        class ranges( Go1FieldHisCfg.commands.ranges ):
+    class commands( Go1FieldCfg.commands ):
+        class ranges( Go1FieldCfg.commands.ranges ):
             lin_vel_x = [-1.0, 1.0]
             lin_vel_y = [-1., 1.]
             ang_vel_yaw = [-1., 1.]
 
-    class domain_rand( Go1FieldHisCfg.domain_rand ):
+    class domain_rand( Go1FieldCfg.domain_rand ):
         init_base_pos_range = dict(
             x= [-0.1, 0.1],
             y= [-0.1, 0.1],
@@ -43,12 +43,12 @@ class Go1RemoteCfg( Go1FieldHisCfg ):
             roll= [-0.4, 0.4],
             pitch= [-0.4, 0.4],
         )
-        init_base_vel_range = merge_dict(Go1FieldHisCfg.domain_rand.init_base_vel_range, dict(
+        init_base_vel_range = merge_dict(Go1FieldCfg.domain_rand.init_base_vel_range, dict(
             x= [-0.8, 1.5],
             y= [-0.8, 0.8],
         ))
 
-    class rewards( Go1FieldHisCfg.rewards ):
+    class rewards( Go1FieldCfg.rewards ):
         class scales:
             ###### hacker from Field
             tracking_ang_vel = 1.
@@ -74,16 +74,16 @@ class Go1RemoteCfg( Go1FieldHisCfg ):
         only_positive_rewards = False
         soft_dof_pos_limit = 0.6
 
-    class normalization( Go1FieldHisCfg.normalization ):
+    class normalization( Go1FieldCfg.normalization ):
         clip_actions_method = "hard"
 
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
-class Go1RemoteCfgPPO( Go1FieldHisCfgPPO ):
-    class algorithm( Go1FieldHisCfgPPO.algorithm ):
+class Go1RemoteCfgPPO( Go1FieldCfgPPO ):
+    class algorithm( Go1FieldCfgPPO.algorithm ):
         entropy_coef = 0.01
         clip_min_std = 0.02
 
-    class runner( Go1FieldHisCfgPPO.runner ):
+    class runner( Go1FieldCfgPPO.runner ):
         resume = True
         # load_run = osp.join(logs_root, "field_a1/Sep26_15-33-45_WalkByRemote_pEnergySubsteps2e-5_pTorqueL18e-01_pCollision0.2_propDelay0.04-0.05_aScale0.5_kp40_kd0.5_maxPushAng0.5_noTanh_hardActClip_noResume")
         load_run = osp.join(logs_root, "field_a1_noTanh_oracle", "Sep28_11-53-30_WalkByRemote_pEnergySubsteps-4e-05_kp40_kd0.5_noTanh_fromSep26_15-33-45")

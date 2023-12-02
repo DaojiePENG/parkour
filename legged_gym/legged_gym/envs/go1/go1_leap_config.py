@@ -1,27 +1,27 @@
 from os import path as osp
 import numpy as np
-from legged_gym.envs.go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
+from legged_gym.envs.go1.go1_field_config_his import Go1FieldCfg, Go1FieldCfgPPO
 from legged_gym.utils.helpers import merge_dict
 
-class Go1LeapCfg( Go1FieldHisCfg ):
+class Go1LeapCfg( Go1FieldCfg ):
 
-    class init_state( Go1FieldHisCfg.init_state ):
+    class init_state( Go1FieldCfg.init_state ):
         pos = [0., 0., 0.4]
 
     #### uncomment this to train non-virtual terrain
-    # class sensor( Go1FieldHisCfg.sensor ):
-    #     class proprioception( Go1FieldHisCfg.sensor.proprioception ):
+    # class sensor( Go1FieldCfg.sensor ):
+    #     class proprioception( Go1FieldCfg.sensor.proprioception ):
     #         latency_range = [0.04-0.0025, 0.04+0.0075]
     #         # latency_range = [0.06-0.005, 0.06+0.005]
     #### uncomment the above to train non-virtual terrain
     
-    class terrain( Go1FieldHisCfg.terrain ):
+    class terrain( Go1FieldCfg.terrain ):
         max_init_terrain_level = 2
         border_size = 5
         slope_treshold = 20.
         curriculum = False
 
-        BarrierTrack_kwargs = merge_dict(Go1FieldHisCfg.terrain.BarrierTrack_kwargs, dict(
+        BarrierTrack_kwargs = merge_dict(Go1FieldCfg.terrain.BarrierTrack_kwargs, dict(
             options= [
                 "leap",
             ],
@@ -35,20 +35,20 @@ class Go1LeapCfg( Go1FieldHisCfg ):
             no_perlin_threshold= 0.06,
         ))
 
-        TerrainPerlin_kwargs = merge_dict(Go1FieldHisCfg.terrain.TerrainPerlin_kwargs, dict(
+        TerrainPerlin_kwargs = merge_dict(Go1FieldCfg.terrain.TerrainPerlin_kwargs, dict(
             zScale= [0.05, 0.12],
         ))
 
-    class commands( Go1FieldHisCfg.commands ):
-        class ranges( Go1FieldHisCfg.commands.ranges ):
+    class commands( Go1FieldCfg.commands ):
+        class ranges( Go1FieldCfg.commands.ranges ):
             lin_vel_x = [1.8, 1.5]
             lin_vel_y = [0.0, 0.0]
             ang_vel_yaw = [0., 0.]
 
-    class control( Go1FieldHisCfg.control ):
+    class control( Go1FieldCfg.control ):
         computer_clip_torque = True
 
-    class termination( Go1FieldHisCfg.termination ):
+    class termination( Go1FieldCfg.termination ):
         # additional factors that determines whether to terminates the episode
         termination_terms = [
             "roll",
@@ -57,23 +57,23 @@ class Go1LeapCfg( Go1FieldHisCfg ):
             "z_high",
             "out_of_track",
         ]
-        # roll_kwargs = merge_dict(Go1FieldHisCfg.termination.roll_kwargs, dict(
+        # roll_kwargs = merge_dict(Go1FieldCfg.termination.roll_kwargs, dict(
         #     threshold= 0.7,
         #     leap_threshold= 0.7,
         # ))
-        # pitch_kwargs = merge_dict(Go1FieldHisCfg.termination.pitch_kwargs, dict(
+        # pitch_kwargs = merge_dict(Go1FieldCfg.termination.pitch_kwargs, dict(
         #     threshold= 0.7,
         #     leap_threshold= 0.7,
         # ))
-        z_low_kwargs = merge_dict(Go1FieldHisCfg.termination.z_low_kwargs, dict(
+        z_low_kwargs = merge_dict(Go1FieldCfg.termination.z_low_kwargs, dict(
             threshold= -0.1,
         ))
-        z_high_kwargs = merge_dict(Go1FieldHisCfg.termination.z_high_kwargs, dict(
+        z_high_kwargs = merge_dict(Go1FieldCfg.termination.z_high_kwargs, dict(
             threshold= 2.0,
         ))
 
-    class domain_rand( Go1FieldHisCfg.domain_rand ):
-        class com_range( Go1FieldHisCfg.domain_rand.com_range ):
+    class domain_rand( Go1FieldCfg.domain_rand ):
+        class com_range( Go1FieldCfg.domain_rand.com_range ):
             z = [-0.2, 0.2]
         
         init_base_pos_range = dict(
@@ -87,7 +87,7 @@ class Go1LeapCfg( Go1FieldHisCfg ):
 
         push_robots = False
 
-    class rewards( Go1FieldHisCfg.rewards ):
+    class rewards( Go1FieldCfg.rewards ):
         class scales:
             tracking_ang_vel = 0.05
             # world_vel_l2norm = -1.
@@ -113,7 +113,7 @@ class Go1LeapCfg( Go1FieldHisCfg ):
         only_positive_rewards = False
         soft_dof_pos_limit = 0.7
 
-    class curriculum( Go1FieldHisCfg.curriculum ):
+    class curriculum( Go1FieldCfg.curriculum ):
         # penetrate_volume_threshold_harder = 9000
         # penetrate_volume_threshold_easier = 10000
         # penetrate_depth_threshold_harder = 300
@@ -125,9 +125,9 @@ class Go1LeapCfg( Go1FieldHisCfg ):
         penetrate_depth_threshold_easier = 500000
 
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
-class Go1LeapCfgPPO( Go1FieldHisCfgPPO ):
+class Go1LeapCfgPPO( Go1FieldCfgPPO ):
 
-    class runner( Go1FieldHisCfgPPO.runner ):
+    class runner( Go1FieldCfgPPO.runner ):
         resume = True
         load_run = "{Your traind walking model directory}"
         # load_run = "Sep20_03-37-32_SkillopensourcePlaneWalking_pEnergySubsteps1e-5_pTorqueExceedIndicate1e-1_aScale0.5_tClip202025"
