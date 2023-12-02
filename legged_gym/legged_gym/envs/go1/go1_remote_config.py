@@ -94,6 +94,7 @@ class Go1RemoteCfgPPO( Go1FieldCfgPPO ):
         load_run = "Oct23_13-14-42_WalkByRemote_pEnergySubsteps1e-05_rLinTrack5.0_pDofAcc2.5e-7_pCollide1e-1_pOrient1e-1_pExceedDof8e-1_pStand4e-1_softDof0.6_noTanh_EntropyCoef0.01_fromOct23_11-01-47"
         load_run = osp.join(logs_root, "field_a1_noTanh_oracle", "Oct12_16-00-55_WalkByRemote_pLin1.0_pFootForce1.e-02_xComMin-0.2_maxForce200_propDelay0.05-0.07_entropyCoef0.01_noTanh_fromOct11_04-34-39")
         load_run = "Oct24_15-05-23_WalkByRemote_rLinTrack3.0_pActRate1e-1_softDof0.6_noTanh_zeroResetAction_hackReset_EntropyCoef0.01_actionCliphard_fromOct12_16-00-55"
+        load_run = "Dec01_15-34-58_WalkByRemote_pLin1.0_rAng0.5_pEnergySubsteps-1e-05_noResume"
 
         run_name = "".join(["WalkByRemote",
         ("_pEnergySubsteps{:.0e}".format(-Go1RemoteCfg.rewards.scales.legs_energy_substeps) if getattr(Go1RemoteCfg.rewards.scales, "legs_energy_substeps", 0.) != 0. else ""),
