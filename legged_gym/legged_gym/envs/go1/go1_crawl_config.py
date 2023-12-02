@@ -1,6 +1,6 @@
 import numpy as np
 from os import path as osp
-from legged_gym.envs.go1.go1_field_config import Go1FieldHisCfg, Go1FieldHisCfgPPO
+from legged_gym.envs.go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
 from legged_gym.utils.helpers import merge_dict
 
 class Go1CrawlCfg( Go1FieldHisCfg ):
