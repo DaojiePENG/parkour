@@ -70,8 +70,7 @@ class A1FieldDistillCfg( A1FieldCfg ):
             options= [
                 "tilt",
                 "crawl",
-                "climb",
-                "climb",
+                "jump",
                 "leap",
             ], # each race track will permute all the options
             n_obstacles_per_track= 4,# 原来是5，这里改成3看看。
