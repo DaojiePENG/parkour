@@ -17,8 +17,8 @@ from rsl_rl.modules import build_actor_critic
 from rsl_rl.runners.dagger_saver import DemonstrationSaver, DaggerSaver
 
 def main(args):
-    RunnerCls = DaggerSaver
-    # RunnerCls = DemonstrationSaver
+    # RunnerCls = DaggerSaver
+    RunnerCls = DemonstrationSaver # 初步蒸馏时使用（2.）；
     success_traj_only = False
     teacher_act_prob = 0.1
     env_cfg, train_cfg = task_registry.get_cfgs(name=args.task)
