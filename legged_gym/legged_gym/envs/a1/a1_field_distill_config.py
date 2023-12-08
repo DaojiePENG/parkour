@@ -263,7 +263,8 @@ class A1FieldDistillCfgPPO( A1FieldCfgPPO ):
                 os.path.join(logs_root, "field_a1/Nov28_11-59-38_Skills_jump_fromNov26_17-29-57"),
                 os.path.join(logs_root, "field_a1/Nov28_12-06-16_Skillleap_pEnergySubsteps-1e-06"),
             ]
-            climb_down_policy_path = os.path.join(logs_root, "field_a1/{your climbing down policy}")
+            # climb_down_policy_path = os.path.join(logs_root, "field_a1/{your climbing down policy}")
+            climb_down_policy_path = os.path.join(logs_root, "field_a1/Dec01_15-35-27_Skills_downfromNov24_09-41-36")
             cmd_vel_mapping = {
                 0: 1.0,
                 1: 0.5,
