@@ -74,7 +74,7 @@ class A1FieldDistillCfg( A1FieldCfg ):
                 "climb",
                 "leap",
             ], # each race track will permute all the options
-            n_obstacles_per_track= 3,# 原来是5，这里改成3看看。
+            n_obstacles_per_track= 4,# 原来是5，这里改成3看看。
             randomize_obstacle_order= True,
             track_width= 3.0,
             track_block_length= 1.8, # the x-axis distance from the env origin point
