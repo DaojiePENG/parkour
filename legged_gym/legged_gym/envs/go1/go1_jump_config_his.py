@@ -3,7 +3,7 @@ import os
 from os import path as osp
 from legged_gym.envs.a1.a1_field_config import A1FieldCfg, A1FieldCfgPPO
 
-class Go1FieldHisCfg( A1FieldCfg ):
+class Go1JumpHisCfg( A1FieldCfg ):
 
     class terrain( A1FieldCfg.terrain ):
         
@@ -209,37 +209,37 @@ class Go1FieldHisCfg( A1FieldCfg ):
         # penetrate_depth_threshold_easier = 5000
 
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
-class Go1FieldHisCfgPPO( A1FieldCfgPPO ):
+class Go1JumpHisCfgPPO( A1FieldCfgPPO ):
     class algorithm( A1FieldCfgPPO.algorithm ):
         entropy_coef = 0.01 # for walk
         clip_min_std = 1e-12 # for walk
 
     class runner( A1FieldCfgPPO.runner ):
-        experiment_name = "field_go1"
+        experiment_name = "jump_go1"
         run_name = "".join(["Skills",
-        ("_all" if len(Go1FieldHisCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else ("_" + Go1FieldHisCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1FieldHisCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
-        ("_pEnergySubsteps" + np.format_float_scientific(-Go1FieldHisCfg.rewards.scales.legs_energy_substeps, trim= "-", exp_digits= 1) if getattr(Go1FieldHisCfg.rewards.scales, "legs_energy_substeps", 0.0) != 0.0 else ""),
-        ("_pPenV" + np.format_float_scientific(-Go1FieldHisCfg.rewards.scales.penetrate_volume, trim= "-", exp_digits= 1) if getattr(Go1FieldHisCfg.rewards.scales, "penetrate_volume", 0.) < 0. else ""),
-        ("_pPenD" + np.format_float_scientific(-Go1FieldHisCfg.rewards.scales.penetrate_depth, trim= "-", exp_digits= 1) if getattr(Go1FieldHisCfg.rewards.scales, "penetrate_depth", 0.) < 0. else ""),
-        ("_rAlive{:d}".format(int(Go1FieldHisCfg.rewards.scales.alive)) if Go1FieldHisCfg.rewards.scales.alive != 2 else ""),
-        ("_rAngVel{:.2f}".format(Go1FieldHisCfg.rewards.scales.tracking_ang_vel) if Go1FieldHisCfg.rewards.scales.tracking_ang_vel != 0.05 else ""),
-        ("_pTorqueExceedIndicate" + np.format_float_scientific(-Go1FieldHisCfg.rewards.scales.exceed_torque_limits_i, trim= "-", exp_digits= 1) if getattr(Go1FieldHisCfg.rewards.scales, "exceed_torque_limits_i", 0.) != 0. else ""),
-        ("_pTorqueExceedSquare" + np.format_float_scientific(-Go1FieldHisCfg.rewards.scales.exceed_torque_limits_square, trim= "-", exp_digits= 1) if getattr(Go1FieldHisCfg.rewards.scales, "exceed_torque_limits_square", 0.) != 0. else ""),
-        ("_pYaw{:.2f}".format(-Go1FieldHisCfg.rewards.scales.yaw_abs) if Go1FieldHisCfg.rewards.scales.yaw_abs != 0. else ""),
-        ("_noComputerTorqueClip" if not Go1FieldHisCfg.control.computer_clip_torque else ""),
-        ("_virtualTerrain" if Go1FieldHisCfg.terrain.BarrierTrack_kwargs["virtual_terrain"] else ""),
+        ("_all" if len(Go1JumpHisCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else ("_" + Go1JumpHisCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1JumpHisCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
+        ("_pEnergySubsteps" + np.format_float_scientific(-Go1JumpHisCfg.rewards.scales.legs_energy_substeps, trim= "-", exp_digits= 1) if getattr(Go1JumpHisCfg.rewards.scales, "legs_energy_substeps", 0.0) != 0.0 else ""),
+        ("_pPenV" + np.format_float_scientific(-Go1JumpHisCfg.rewards.scales.penetrate_volume, trim= "-", exp_digits= 1) if getattr(Go1JumpHisCfg.rewards.scales, "penetrate_volume", 0.) < 0. else ""),
+        ("_pPenD" + np.format_float_scientific(-Go1JumpHisCfg.rewards.scales.penetrate_depth, trim= "-", exp_digits= 1) if getattr(Go1JumpHisCfg.rewards.scales, "penetrate_depth", 0.) < 0. else ""),
+        ("_rAlive{:d}".format(int(Go1JumpHisCfg.rewards.scales.alive)) if Go1JumpHisCfg.rewards.scales.alive != 2 else ""),
+        ("_rAngVel{:.2f}".format(Go1JumpHisCfg.rewards.scales.tracking_ang_vel) if Go1JumpHisCfg.rewards.scales.tracking_ang_vel != 0.05 else ""),
+        ("_pTorqueExceedIndicate" + np.format_float_scientific(-Go1JumpHisCfg.rewards.scales.exceed_torque_limits_i, trim= "-", exp_digits= 1) if getattr(Go1JumpHisCfg.rewards.scales, "exceed_torque_limits_i", 0.) != 0. else ""),
+        ("_pTorqueExceedSquare" + np.format_float_scientific(-Go1JumpHisCfg.rewards.scales.exceed_torque_limits_square, trim= "-", exp_digits= 1) if getattr(Go1JumpHisCfg.rewards.scales, "exceed_torque_limits_square", 0.) != 0. else ""),
+        ("_pYaw{:.2f}".format(-Go1JumpHisCfg.rewards.scales.yaw_abs) if Go1JumpHisCfg.rewards.scales.yaw_abs != 0. else ""),
+        ("_noComputerTorqueClip" if not Go1JumpHisCfg.control.computer_clip_torque else ""),
+        ("_virtualTerrain" if Go1JumpHisCfg.terrain.BarrierTrack_kwargs["virtual_terrain"] else ""),
         ("_aScale{:d}{:d}{:d}".format(
-                int(Go1FieldHisCfg.control.action_scale[0] * 10),
-                int(Go1FieldHisCfg.control.action_scale[1] * 10),
-                int(Go1FieldHisCfg.control.action_scale[2] * 10),
-            ) if isinstance(Go1FieldHisCfg.control.action_scale, (tuple, list)) \
-            else "_aScale{:.1f}".format(Go1FieldHisCfg.control.action_scale)
+                int(Go1JumpHisCfg.control.action_scale[0] * 10),
+                int(Go1JumpHisCfg.control.action_scale[1] * 10),
+                int(Go1JumpHisCfg.control.action_scale[2] * 10),
+            ) if isinstance(Go1JumpHisCfg.control.action_scale, (tuple, list)) \
+            else "_aScale{:.1f}".format(Go1JumpHisCfg.control.action_scale)
         ),
-        ("_torqueClip{:.0f}".format(Go1FieldHisCfg.control.torque_limits) if not isinstance(Go1FieldHisCfg.control.torque_limits, (tuple, list)) else (
+        ("_torqueClip{:.0f}".format(Go1JumpHisCfg.control.torque_limits) if not isinstance(Go1JumpHisCfg.control.torque_limits, (tuple, list)) else (
             "_tClip{:d}{:d}{:d}".format(
-                int(Go1FieldHisCfg.control.torque_limits[0]),
-                int(Go1FieldHisCfg.control.torque_limits[1]),
-                int(Go1FieldHisCfg.control.torque_limits[2]),
+                int(Go1JumpHisCfg.control.torque_limits[0]),
+                int(Go1JumpHisCfg.control.torque_limits[1]),
+                int(Go1JumpHisCfg.control.torque_limits[2]),
             )
         )),
         ])

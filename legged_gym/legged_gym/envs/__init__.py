@@ -90,3 +90,5 @@ task_registry.register( "go1_tilt", LeggedRobotNoisy, Go1TiltCfg(), Go1TiltCfgPP
 # added from history go1_field_config for training
 from .go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
 task_registry.register( "go1_field_his", LeggedRobotNoisy, Go1FieldHisCfg(), Go1FieldHisCfgPPO())
+from .go1.go1_jump_config_his import Go1JumpHisCfg, Go1JumpHisCfgPPO
+task_registry.register( "go1_jump_his", LeggedRobotNoisy, Go1JumpHisCfg(), Go1JumpHisCfgPPO())
