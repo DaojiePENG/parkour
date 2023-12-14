@@ -21,7 +21,7 @@ class Go1JumpHisCfg( A1FieldCfg ):
 
         BarrierTrack_kwargs = dict(
             options= [
-                "climb",
+                "jump",
                 # "crawl",
                 # "tilt",
                 # "leap",
