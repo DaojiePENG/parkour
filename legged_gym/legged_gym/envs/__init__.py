@@ -93,4 +93,6 @@ task_registry.register( "go1_field_his", LeggedRobotNoisy, Go1FieldHisCfg(), Go1
 from .go1.go1_jump_config_his import Go1JumpHisCfg, Go1JumpHisCfgPPO
 task_registry.register( "go1_jump_his", LeggedRobotNoisy, Go1JumpHisCfg(), Go1JumpHisCfgPPO())
 from .go1.go1_leap_config_his import Go1LeapHisCfg, Go1LeapHisCfgPPO
-task_registry.register("go1_leap_his", LeggedRobotNoisy, Go1LeapHisCfg, Go1LeapHisCfgPPO)
+task_registry.register("go1_leap_his", LeggedRobotNoisy, Go1LeapHisCfg(), Go1LeapHisCfgPPO())
+from .go1.go1_crawl_config_his import Go1CrawlHisCfg, Go1CrawlHisCfgPPO
+task_registry.register("go1_crawl_his",LeggedRobotNoisy, Go1CrawlHisCfg(), Go1CrawlHisCfgPPO())
