@@ -78,12 +78,13 @@ def load_walk_policy(env, model_dir):
             num_actions= 12,
             **config_dict["policy"],
         )
-        model_names = [i for i in os.listdir(model_dir) if i.startswith("model_")]
-        model_names.sort(key= lambda x: int(x.split("_")[-1].split(".")[0]))
-        state_dict = torch.load(osp.join(model_dir, model_names[-1]), map_location= "cpu")
-        model.load_state_dict(state_dict["model_state_dict"])
+        model_names = [i for i in os.listdir(model_dir) if i.startswith("model_")] # 策略目录下获取全部以 model_ 开头的模型名称；
+        model_names.sort(key= lambda x: int(x.split("_")[-1].split(".")[0])) # 将获取到的模型名称排序；
+        state_dict = torch.load(osp.join(model_dir, model_names[-1]), map_location= "cpu") # 取倒数第一个，也就是编好数最大的一个模型载入，返回一个参数字典；
+        model.load_state_dict(state_dict["model_state_dict"]) # 从参数字典中提取与模型相关的参数配置载入到策略模型中；
         model_action_scale = torch.tensor(config_dict["control"]["action_scale"]) if isinstance(config_dict["control"]["action_scale"], (tuple, list)) else torch.tensor([config_dict["control"]["action_scale"]])[0]
         if not (torch.is_tensor(model_action_scale) and (model_action_scale == env.action_scale).all()):
+            '''计算动作缩放恢复系数=模型缩放/动作缩放'''
             action_rescale_ratio = model_action_scale / env.action_scale
             print("walk_policy action scaling:", action_rescale_ratio.tolist())
         else:
@@ -273,6 +274,8 @@ def main(args):
         actor_mlp = model.actor
         @torch.jit.script
         def policy(obs):
+            '''为什么要在这里用这种方式定义这个函数？
+            '''
             recurrent_embedding = memory_module(obs)
             actions = actor_mlp(recurrent_embedding.squeeze(0))
             return actions

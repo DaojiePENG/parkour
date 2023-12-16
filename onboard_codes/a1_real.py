@@ -37,6 +37,14 @@ def quat_rotate_inverse(q, v):
 
 class UnitreeA1Real:
     """ This is the handler that works for ROS 1 on unitree. """
+    '''
+    大致过程：
+        0. start_ros()
+        loop:
+            1. get_obs()
+            2. policy process ...
+            3. send_action()
+    '''
     def __init__(self,
             robot_namespace= "a112138",
             low_state_topic= "/low_state",
@@ -116,6 +124,14 @@ class UnitreeA1Real:
         self.process_configs()
     
     def start_ros(self):
+        '''本函数处理了有关ros的订阅和发布等功能
+        发布：腿部的控制信息 LegsCmd；
+        订阅：机身发布的底层姿态信息；
+        订阅：机身里程计的信息；
+        订阅：来自遥控器的控制信息；
+        订阅：前置摄像头的信息；
+        订阅：机身姿态信息；
+        '''
         # initialze several buffers so that the system works even without message update.
         # self.low_state_buffer = LowState() # not initialized, let input message update it.
         self.base_position_buffer = torch.zeros((self.num_envs, 3), device= self.model_device, requires_grad= False)
@@ -172,12 +188,23 @@ class UnitreeA1Real:
         )
     
     def wait_untill_ros_working(self):
+        '''等待相关ros启动，并且初始化来自机身的底层信息
+        被调：启动ros流程的时候调用，来等待ros初始化完成再进行接下来的步骤；
+        调用：None；
+        '''
         rate = rospy.Rate(100)
         while not hasattr(self, "low_state_buffer"):
             rate.sleep()
         rospy.loginfo("UnitreeA1Real.low_state_buffer acquired, stop waiting.")
         
     def process_configs(self):
+        '''处理相关的配置信息
+        被调：self.__init__(...);
+        调用：
+            get_obs_segment_from_components();
+            get_num_obs_from_components();
+        ???有待进一步熟悉；
+        '''
         self.up_axis_idx = 2 # 2 for z, 1 for y -> adapt gravity accordingly
         self.gravity_vec = torch.zeros((self.num_envs, 3), dtype= torch.float32)
         self.gravity_vec[:, self.up_axis_idx] = -1
@@ -274,6 +301,10 @@ class UnitreeA1Real:
         return torch.zeros(self.num_envs, 187, device= self.model_device, requires_grad= False)
     
     def clip_action_before_scale(self, actions):
+        '''缩放前裁剪动作指令
+        被调：self.send_action(action);
+        调用：None;
+        '''
         actions = torch.clip(actions, -self.clip_actions, self.clip_actions)
         if getattr(self, "clip_actions_method", None) == "hard":
             actions = torch.clip(actions, self.clip_actions_low, self.clip_actions_high)
@@ -281,6 +312,10 @@ class UnitreeA1Real:
         return actions
 
     def clip_by_torque_limit(self, actions_scaled):
+        '''依据扭矩限制剪裁动作指令；
+        被调：self.send_action(actions)；
+        调用：None；
+        '''
         """ Different from simulation, we reverse the process and clip the actions directly,
         so that the PD controller runs in robot but not our script.
         """
@@ -297,6 +332,10 @@ class UnitreeA1Real:
 
     """ Get obs components and cat to a single obs input """
     def _get_proprioception_obs(self):
+        '''获取机身感知观测信息
+        被调：None;
+        调用：quat_rotate_inverse();
+        '''
         # base_ang_vel = quat_rotate_inverse(
         #     torch.tensor(self.low_state_buffer.imu.quaternion).unsqueeze(0),
         #     torch.tensor(self.low_state_buffer.imu.gyroscope).unsqueeze(0),
@@ -330,7 +369,7 @@ class UnitreeA1Real:
             (dof_pos - self.default_dof_pos) * self.obs_scales["dof_pos"],
             dof_vel * self.obs_scales["dof_vel"],
             self.actions
-        ], dim= -1)
+        ], dim= -1) # 按照倒数第一维度数对张量进行拼接；
 
     def _get_forward_depth_obs(self):
         if not self.forward_depth_embedding_dims:
@@ -341,9 +380,13 @@ class UnitreeA1Real:
             return self.forward_depth_embedding_buf.flatten(start_dim= 1)
 
     def compute_observation(self):
+        '''使用获取到的 low_state_buffer 来计算感知观测信息向量
+        被调：self.get_obs();
+        调用：None;
+        '''
         """ use the updated low_state_buffer to compute observation vector """
         assert hasattr(self, "legs_cmd_publisher"), "start_ros() not called, ROS handlers are not initialized!"
-        obs_segments = self.obs_segments
+        obs_segments = self.obs_segments # 来自初始化中 self.process_configs() 对观测段的配置信息初始化；
         obs = []
         for k, v in obs_segments.items():
             obs.append(
@@ -357,6 +400,12 @@ class UnitreeA1Real:
     NOTE: the outer user handles the loop frequency.
     """
     def send_action(self, actions):
+        '''发送动作指令到实际的机器人
+        被调：None
+        调用：
+            self.clip_action_before_scale(actions);
+            self.clip_by_torque_limit(actions_scaled);
+        '''
         """ The function that send commands to the real robot.
         """
         self.actions = self.clip_action_before_scale(actions)
@@ -406,6 +455,10 @@ class UnitreeA1Real:
         self.legs_cmd_publisher.publish(legs_cmd)
 
     def get_obs(self):
+        '''获取感知观测信息，刷新缓存并返回感知观测信息向量到相应device上
+        被调：None;
+        调用：compute_observation();
+        '''
         """ The function that refreshes the buffer and return the observation vector.
         """
         self.compute_observation()
@@ -414,6 +467,10 @@ class UnitreeA1Real:
 
     """ Copied from legged_robot_field. Please check whether these are consistent. """
     def get_obs_segment_from_components(self, components):
+        '''将输入的感知观测组成进行解析
+        被调：self.get_num_obs_from_components(components);
+        调用：None;
+        '''
         segments = OrderedDict()
         if "proprioception" in components:
             segments["proprioception"] = (48,)
@@ -439,6 +496,10 @@ class UnitreeA1Real:
         return segments
         
     def get_num_obs_from_components(self, components):
+        '''从输入的感知观测中获取感知数量
+        被调：self.process_configs(self);
+        调用：self.get_obs_segment_from_components(components);
+        '''
         obs_segments = self.get_obs_segment_from_components(components)
         num_obs = 0
         for k, v in obs_segments.items():
