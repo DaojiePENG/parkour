@@ -58,7 +58,7 @@ class Go1JumpHisCfg( A1FieldCfg ):
             border_perlin_noise= True,
             border_height= 0., # for climb, crawl, tilt, walk
             # border_height= -0.5, # for leap
-            virtual_terrain= False, # for climb, crawl, leap
+            virtual_terrain= True, # for climb, crawl, leap
             # virtual_terrain= True, # for tilt
             draw_virtual_terrain= True,
             engaging_next_threshold= 1.2,
@@ -215,7 +215,7 @@ class Go1JumpHisCfgPPO( A1FieldCfgPPO ):
         clip_min_std = 1e-12 # for walk
 
     class runner( A1FieldCfgPPO.runner ):
-        experiment_name = "jump_go1"
+        experiment_name = "field_go1"
         run_name = "".join(["Skills",
         ("_all" if len(Go1JumpHisCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else ("_" + Go1JumpHisCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1JumpHisCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
         ("_pEnergySubsteps" + np.format_float_scientific(-Go1JumpHisCfg.rewards.scales.legs_energy_substeps, trim= "-", exp_digits= 1) if getattr(Go1JumpHisCfg.rewards.scales, "legs_energy_substeps", 0.0) != 0.0 else ""),

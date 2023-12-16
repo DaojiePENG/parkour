@@ -215,7 +215,7 @@ class Go1LeapHisCfgPPO( A1FieldCfgPPO ):
         clip_min_std = 1e-12 # for walk
 
     class runner( A1FieldCfgPPO.runner ):
-        experiment_name = "leap_go1"
+        experiment_name = "field_go1"
         run_name = "".join(["Skills",
         ("_all" if len(Go1LeapHisCfg.terrain.BarrierTrack_kwargs["options"]) > 1 else ("_" + Go1LeapHisCfg.terrain.BarrierTrack_kwargs["options"][0] if Go1LeapHisCfg.terrain.BarrierTrack_kwargs["options"] else "PlaneWalking")),
         ("_pEnergySubsteps" + np.format_float_scientific(-Go1LeapHisCfg.rewards.scales.legs_energy_substeps, trim= "-", exp_digits= 1) if getattr(Go1LeapHisCfg.rewards.scales, "legs_energy_substeps", 0.0) != 0.0 else ""),
