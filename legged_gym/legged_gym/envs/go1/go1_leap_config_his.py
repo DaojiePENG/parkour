@@ -198,15 +198,15 @@ class Go1LeapHisCfg( A1FieldCfg ):
         # penetrate_depth_threshold_harder = 20
         # penetrate_depth_threshold_easier = 300
         # for climb
-        # penetrate_volume_threshold_harder = 6000
-        # penetrate_volume_threshold_easier = 12000
-        # penetrate_depth_threshold_harder = 600
-        # penetrate_depth_threshold_easier = 1600
+        penetrate_volume_threshold_harder = 6000
+        penetrate_volume_threshold_easier = 12000
+        penetrate_depth_threshold_harder = 600
+        penetrate_depth_threshold_easier = 1600
         # for leap
-        penetrate_volume_threshold_harder = 9000
-        penetrate_volume_threshold_easier = 10000
-        penetrate_depth_threshold_harder = 300
-        penetrate_depth_threshold_easier = 5000
+        # penetrate_volume_threshold_harder = 9000
+        # penetrate_volume_threshold_easier = 10000
+        # penetrate_depth_threshold_harder = 300
+        # penetrate_depth_threshold_easier = 5000
 
 logs_root = osp.join(osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))), "logs")
 class Go1LeapHisCfgPPO( A1FieldCfgPPO ):
