@@ -270,7 +270,7 @@ def main(args):
         rospy.spin()
     elif args.mode == "upboard":
         # extract and build the torch ScriptFunction
-        memory_module = model.memory_a
+        memory_module = model.memory_a # 给感知观测数据分配内存；
         actor_mlp = model.actor
         @torch.jit.script
         def policy(obs):
@@ -304,17 +304,20 @@ def main(args):
                         using_walk_policy = False
                         model.reset()
                 else:
+                    '''如果没有激活skill模式，那么就要保证walk模式被使用。当没使用的时候检测并切换使用walk模式。'''
                     if not using_walk_policy:
                         rospy.loginfo_throttle(0.1, "switch to walk policy")
                         using_walk_policy = True
                         walk_model.reset()
+                '''根据模式选项来决定动作用哪个模型的输出。'''
                 if not using_walk_policy:
                     obs = unitree_real_env.get_obs()
                     actions = policy(obs)
                 else:
                     walk_obs = unitree_real_env._get_proprioception_obs()
                     actions = walk_policy(walk_obs)
-                unitree_real_env.send_action(actions)
+                    
+                unitree_real_env.send_action(actions) # 将策略的动作输出发送到实际机器人上；
                 # unitree_real_env.send_action(torch.zeros((1, 12)))
                 # inference_duration = rospy.get_time() - inference_start_time
                 # rospy.loginfo("inference duration: {:.3f}".format(inference_duration))
