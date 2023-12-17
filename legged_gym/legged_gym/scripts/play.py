@@ -107,8 +107,8 @@ def play(args):
     ]
     if "one_obstacle_per_track" in env_cfg.terrain.BarrierTrack_kwargs.keys():
         env_cfg.terrain.BarrierTrack_kwargs.pop("one_obstacle_per_track")
-    env_cfg.terrain.BarrierTrack_kwargs["n_obstacles_per_track"] = 2
-    env_cfg.commands.ranges.lin_vel_x = [1.2, 1.2]
+    env_cfg.terrain.BarrierTrack_kwargs["n_obstacles_per_track"] = 3
+    env_cfg.commands.ranges.lin_vel_x = [-1.2, 1.2]
     if "distill" in args.task:
         env_cfg.commands.ranges.lin_vel_x = [0.0, 0.0]
         env_cfg.commands.ranges.lin_vel_y = [-0., 0.]
@@ -122,7 +122,7 @@ def play(args):
     env_cfg.termination.timeout_at_border = False
     env_cfg.termination.timeout_at_finished = False
     env_cfg.viewer.debug_viz = False # in a1_distill, setting this to true will constantly showing the egocentric depth view.
-    env_cfg.viewer.draw_volume_sample_points = False
+    env_cfg.viewer.draw_volume_sample_points = True
     train_cfg.runner.resume = True
     train_cfg.runner_class_name = "OnPolicyRunner"
     if "distill" in args.task: # to save the memory
@@ -230,6 +230,8 @@ def play(args):
             print(obs_component[robot_index])
         actions = policy(obs.detach())
         teacher_actions = actions
+        # 这step是整个play.py 中最关键的语句；激活了整个Isaac相关的功能；
+        # 我需要的自动在给机器人command的函数也就是在这里面，跟仿真时候一样的随机指令生成；
         obs, critic_obs, rews, dones, infos = env.step(actions.detach())
         if RECORD_FRAMES:
             filename = os.path.join(
@@ -326,6 +328,7 @@ def play(args):
             print("env dones,{} because has timeout".format("" if env.time_out_buf[dones].any() else " not"))
             print(infos)
         if i % 100 == 0:
+            '''自动提供定期x方向的速度指令信息'''
             print("frame_rate:" , 100/(time.time_ns() - start_time) * 1e9, 
                   "command_x:", env.commands[robot_index, 0],
             )
