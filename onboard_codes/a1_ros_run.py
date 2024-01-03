@@ -204,7 +204,7 @@ def main(args):
     unitree_real_env = SkilledA1Real(
         robot_namespace= args.namespace,
         cfg= config_dict,
-        forward_depth_topic= "/visual_embedding" if args.mode == "upboard" else "/camera/depth/image_rect_raw",
+        forward_depth_topic= "/visual_embedding" if args.mode == "upboard" else "/camera/depth/image_rect_raw", # 这里实例化时，更换了深度相机话题订阅的选择；
         forward_depth_embedding_dims= config_dict["policy"]["visual_latent_size"] if args.mode == "upboard" else None,
         move_by_wireless_remote= True,
         skill_vel_range= config_dict["commands"]["ranges"]["lin_vel_x"],

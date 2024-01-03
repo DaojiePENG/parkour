@@ -175,9 +175,9 @@ class UnitreeA1Real:
                 )
             else:
                 self.forward_depth_subscriber = rospy.Subscriber(
-                    self.robot_namespace + self.forward_depth_topic,
+                    self.robot_namespace + self.forward_depth_topic, # 默认是："/camera/depth/image_rect_raw"，这里情况下需要换成"/visual_embedding"；
                     Float32MultiArrayStamped,
-                    self.update_forward_depth_embedding,
+                    self.update_forward_depth_embedding, # 订阅来自深度相机的话题信息，并调用函数进行处理；结果保存在 self.forward_depth_embedding_buf[:]；
                     queue_size= 1,
                 )
         self.pose_cmd_subscriber = rospy.Subscriber(
@@ -372,6 +372,7 @@ class UnitreeA1Real:
         ], dim= -1) # 按照倒数第一维度数对张量进行拼接；
 
     def _get_forward_depth_obs(self):
+        '''深度相机信息来源于 start_ros() 中的深度相机话题信息的订阅 '''
         if not self.forward_depth_embedding_dims:
             return self.forward_depth_buf.flatten(start_dim= 1)
         else:
@@ -389,6 +390,7 @@ class UnitreeA1Real:
         obs_segments = self.obs_segments # 来自初始化中 self.process_configs() 对观测段的配置信息初始化；
         obs = []
         for k, v in obs_segments.items():
+            '''调用组合在本类中定义的以"_get_"开头的一系列观测函数，从而获取到观测值'''
             obs.append(
                 getattr(self, "_get_" + k + "_obs")() * \
                 self.obs_scales.get(k, 1.)

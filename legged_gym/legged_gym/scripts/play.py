@@ -231,6 +231,8 @@ def play(args):
             print(obs_component[robot_index])
         actions = policy(obs.detach()) # 使用策略计算动作，也就是赋值给电机的控制指令：‘P’，‘V’，‘T’等形式
         teacher_actions = actions
+        # 这step是整个play.py 中最关键的语句；激活了整个Isaac相关的功能；
+        # 我需要的自动在给机器人command的函数也就是在这里面，跟仿真时候一样的随机指令生成；
         obs, critic_obs, rews, dones, infos = env.step(actions.detach())
         if RECORD_FRAMES:
             filename = os.path.join(

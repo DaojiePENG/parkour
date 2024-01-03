@@ -87,8 +87,8 @@ def get_input_filter(args):
             depth_image,
             depth_min,
             depth_max,
-        ) / (depth_max - depth_min)
-        depth_image = resize2d(depth_image, (output_height, output_width))
+        ) / (depth_max - depth_min) # 在这里对深度图像信息进行了归一化处理；
+        depth_image = resize2d(depth_image, (output_height, output_width)) # 在这里使用自适应平均池化（adaptive_avg_pool2d）的方法将深度图像变化为目标像素尺寸；
         return depth_image
     # input_filter = torch.jit.script(input_filter)
 
@@ -144,7 +144,7 @@ def main(args):
     rospy.init_node("a1_legged_gym_jetson")
 
     input_filter, depth_range = get_input_filter(args)
-    model_script, model_device = get_encoder_script(args.logdir)
+    model_script, model_device = get_encoder_script(args.logdir) # 获取模型的编码器脚本；
     with open(osp.join(args.logdir, "config.json"), "r") as f:
         config_dict = json.load(f, object_pairs_hook= OrderedDict)
     if config_dict.get("sensor", dict()).get("forward_camera", dict()).get("refresh_duration", None) is not None:
@@ -153,7 +153,10 @@ def main(args):
         rospy.loginfo("Using refresh duration {}s".format(refresh_duration))
     else:
         ros_rate = rospy.Rate(args.fps)
-
+    '''经过下面这个函数的滤波之后的数据还是原始设置的像素尺寸；
+    实际上深度相机的输出图像像素在这里已经指定了，似乎 rs 中可以通过配置来直接输出相应的像素图形？
+    这里的结果就是直接采用了命令行参数中默认的 w480*h270 ；但是看蒸馏的配置，实际上仿真中使用的深度信息输入只有 48*64， 看看在哪里还进行变化了；
+    '''
     rs_pipeline, rs_filters = get_started_pipeline(
         height= args.height,
         width= args.width,
@@ -166,14 +169,14 @@ def main(args):
     # gyro_config.enable_stream(rs.stream.gyro, rs.format.motion_xyz32f, 200)
     # gyro_profile = gyro_pipeline.start(gyro_config)
 
-    embedding_publisher = rospy.Publisher(
+    embedding_publisher = rospy.Publisher( # 发布的是经过池化的深度相机数据信息；
         args.namespace + "/visual_embedding",
         Float32MultiArrayStamped,
         queue_size= 1,
     )
 
     if args.enable_vis:
-        depth_image_publisher = rospy.Publisher(
+        depth_image_publisher = rospy.Publisher( # 用于发布深度相机信息的话题；
             args.namespace + "/camera/depth/image_rect_raw",
             Image,
             queue_size= 1,
@@ -224,19 +227,19 @@ def main(args):
             depth_frame = rs_filters(depth_frame)
             depth_image_ = np.asanyarray(depth_frame.get_data())
             depth_image = torch.from_numpy(depth_image_.astype(np.float32)).unsqueeze(0).unsqueeze(0).to(model_device)
-            depth_image = input_filter(depth_image)
+            depth_image = input_filter(depth_image) # 这里使用自适应池化将图像转化为适应模型输入的观测信息结构；
             with torch.no_grad():
-                depth_embedding = model_script(depth_image).reshape(-1).cpu().numpy()
+                depth_embedding = model_script(depth_image).reshape(-1).cpu().numpy() # model_script 就是 model.visual_encoder，在rl文件visual_actor_critic.py中定义和使用；
             embedding_msg.header.seq += 1
             embedding_msg.data = depth_embedding.tolist()
-            embedding_publisher.publish(embedding_msg)
+            embedding_publisher.publish(embedding_msg) # 发布深度相机信息，这个是可用于模型输入的尺寸；
             
             # Publish the acquired image if needed
             if args.enable_vis:
                 depth_image_msg = ros_numpy.msgify(Image, depth_image_, encoding= "16UC1")
                 depth_image_msg.header.stamp = rospy.Time.now()
                 depth_image_msg.header.frame_id = args.namespace + "/camera_depth_optical_frame"
-                depth_image_publisher.publish(depth_image_msg)
+                depth_image_publisher.publish(depth_image_msg) # 用话题发布深度相机信息；
                 network_input_np = (\
                     depth_image.detach().cpu().numpy()[0, 0] * (depth_range[1] - depth_range[0]) \
                     + depth_range[0]

@@ -52,6 +52,9 @@ class VisualActorCriticMixin:
         )
 
     def embed_visual_latent(self, observations):
+        '''用于对视觉观测信息进行延时
+        还没看明白这个怎么实现功能的？？？
+        '''
         leading_dims = observations.shape[:-1]
         visual_latent = self.visual_encoder(
             observations[..., self.visual_obs_slice[0]].reshape(-1, *self.visual_obs_slice[1])
