@@ -73,7 +73,7 @@ class LeggedRobot(BaseTask):
 
         if not self.headless:
             '''如果不是 headless 的情况，就按照 config 文件中 viewer 定义的参数放置观查相机镜头；'''
-            self.set_camera(self.cfg.viewer.pos, self.cfg.viewer.lookat)
+            self.set_camera(self.cfg.viewer.pos, self.cfg.viewer.lookat) # 相机的设置需要两个参数，相机的位置和摆放的角度；
         self._init_buffers()
         self._prepare_reward_function()
         self.init_done = True
@@ -113,7 +113,7 @@ class LeggedRobot(BaseTask):
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
 
     def post_decimation_step(self, dec_i):
-        '''
+        '''每次数据抽取后的操作
         substep_xxx 比 xxx 多了 dec_i 这个维度；
         主要被用来提供监测和计算奖励；
         '''
@@ -143,7 +143,7 @@ class LeggedRobot(BaseTask):
         # compute observations, rewards, resets, ...
         self.check_termination()
         self.compute_reward()
-        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten()
+        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten() # 返回非零项标号，一维；
         self.reset_idx(env_ids)
         self.compute_observations() # in some cases a simulation step might be required to refresh some obs (for example body positions)
 
@@ -342,6 +342,7 @@ class LeggedRobot(BaseTask):
         return props
 
     def _process_rigid_body_props(self, props, env_id):
+        '''给机器人添加随机重量负载'''
         # if env_id==0:
         #     sum = 0
         #     for i, p in enumerate(props):
@@ -399,7 +400,7 @@ class LeggedRobot(BaseTask):
 
     def _compute_torques(self, actions):
         '''
-        这里用来选择电机的控制方式，根据控制方式和 actions 目标，计算应该输出的扭矩数值，然后将扭矩数值传入仿真空间中进行仿真；
+        这里实现了个PD控制器，选择电机的控制方式“P,V,T”，根据控制方式和 actions 目标，计算应该输出的扭矩数值，然后将扭矩数值传入仿真空间中进行仿真；
         '''
         """ Compute torques from actions.
             Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
@@ -437,6 +438,7 @@ class LeggedRobot(BaseTask):
             env_ids (List[int]): Environemnt ids
         """
         if getattr(self.cfg.domain_rand, "init_dof_pos_ratio_range", None) is not None:
+            '''对节点初始化位置进行随机化处理'''
             self.dof_pos[env_ids] = self.default_dof_pos * torch_rand_float(
                 self.cfg.domain_rand.init_dof_pos_ratio_range[0],
                 self.cfg.domain_rand.init_dof_pos_ratio_range[1],
@@ -447,10 +449,11 @@ class LeggedRobot(BaseTask):
             self.dof_pos[env_ids] = self.default_dof_pos
         # self.dof_vel[env_ids] = 0. # history init method
         dof_vel_range = getattr(self.cfg.domain_rand, "init_dof_vel_range", [-3., 3.])
+        # 按照输入张量的形状生成 dof_vel_range 范围内的随机张量；
         self.dof_vel[env_ids] = torch.rand_like(self.dof_vel[env_ids]) * abs(dof_vel_range[1] - dof_vel_range[0]) + min(dof_vel_range)
 
         # Each env has multiple actors. So the actor index is not the same as env_id. But robot actor is always the first.
-        dof_idx = env_ids * self.all_root_states.shape[0] / self.num_envs
+        dof_idx = env_ids * self.all_root_states.shape[0] / self.num_envs # 没看明白？？？
         dof_idx_int32 = dof_idx.to(dtype=torch.int32)
         self.gym.set_dof_state_tensor_indexed(self.sim,
                                               gymtorch.unwrap_tensor(self.all_dof_states),
@@ -599,6 +602,7 @@ class LeggedRobot(BaseTask):
         # If the tracking reward is above 80% of the maximum, increase the range of commands
         if torch.mean(self.episode_sums["tracking_lin_vel"][env_ids]) / self.max_episode_length > 0.8 * self.reward_scales["tracking_lin_vel"]:
             '''
+            奖励计算是采用e指数的，速度误差越小越接近1，因此这里选择 0.8；
             torch.mean(self.episode_sums["tracking_lin_vel"][env_ids]) / self.max_episode_length 计算的是每一轮中平均每个片段的奖励；
             self.max_episode_length是每一轮训练中刷新的总次数；
 
@@ -910,11 +914,11 @@ class LeggedRobot(BaseTask):
             body_props = self.gym.get_actor_rigid_body_properties(env_handle, actor_handle) # 1. 获取第 i 个实体物理信息；
             body_props = self._process_rigid_body_props(body_props, i) # 2. 对其中的参数进行随机化，此版本函数实现了对重力参数进行随机化；
             self.gym.set_actor_rigid_body_properties(env_handle, actor_handle, body_props, recomputeInertia=True) # 3. 将处理后的实体物理参数设置回仿真；
-            sensor_handle_dict = self._create_sensors(env_handle, actor_handle) # 添加机身传感特性；具体用法和定义？
+            sensor_handle_dict = self._create_sensors(env_handle, actor_handle) # 添加机身传感特性；具体用法和定义？转到self.sensor_handles
             npc_handle_dict = self._create_npc(env_handle, i) # 添加非玩家角色，non-player character；具体用法和定义？
             self.envs.append(env_handle)
             self.actor_handles.append(actor_handle)
-            self.sensor_handles.append(sensor_handle_dict)
+            self.sensor_handles.append(sensor_handle_dict) # 每一个 env 都保存一个传感器句柄，后面可以按照env id进行访问使用；
             self.npc_handles.append(npc_handle_dict)
 
         # 下面几个 for 循环提供了一些需要计算奖励的特殊实体的索引标号，比如脚部、会被惩罚的接触实体、会导致训练重启的实体名等；
@@ -1104,9 +1108,10 @@ class LeggedRobot(BaseTask):
         return heights.view(self.num_envs, -1) * self.terrain.cfg.vertical_scale
     
     def _fill_extras(self, env_ids):
+        '''填充需要导出显示到终端的内容'''
         self.extras["episode"] = {}
         for key in self.episode_sums.keys():
-            self.extras["episode"]['rew_' + key] = torch.mean(self.episode_sums[key][env_ids]) / self.max_episode_length_s
+            self.extras["episode"]['rew_' + key] = torch.mean(self.episode_sums[key][env_ids]) / self.max_episode_length_s # 将片段对env_ids数求均值，再对片段长度求均值，得到平均片段奖励值；
             self.extras["episode"]['rew_frame_' + key] = torch.nanmean(self.episode_sums[key][env_ids] / self.episode_length_buf[env_ids])
             self.episode_sums[key][env_ids] = 0.
         # log additional curriculum info

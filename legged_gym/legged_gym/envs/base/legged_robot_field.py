@@ -279,8 +279,8 @@ class LeggedRobotField(LeggedRobot):
         with torch.no_grad():
             pos_x = self.root_states[:, 0] - self.env_origins[:, 0]
             pos_y = self.root_states[:, 1] - self.env_origins[:, 1]
-            self.extras["episode"]["max_pos_x"] = max(self.extras["episode"]["max_pos_x"], torch.max(pos_x).cpu())
-            self.extras["episode"]["min_pos_x"] = min(self.extras["episode"]["min_pos_x"], torch.min(pos_x).cpu())
+            self.extras["episode"]["max_pos_x"] = max(self.extras["episode"]["max_pos_x"], torch.max(pos_x).cpu()) # 每一步都会_post_physics_step_callback，记录这里面的最大值；
+            self.extras["episode"]["min_pos_x"] = min(self.extras["episode"]["min_pos_x"], torch.min(pos_x).cpu()) # 在重置的env上调用_fill_extras将这些再重置为0；
             self.extras["episode"]["max_pos_y"] = max(self.extras["episode"]["max_pos_y"], torch.max(pos_y).cpu())
             self.extras["episode"]["min_pos_y"] = min(self.extras["episode"]["min_pos_y"], torch.min(pos_y).cpu())
             if self.check_BarrierTrack_terrain():
@@ -351,9 +351,10 @@ class LeggedRobotField(LeggedRobot):
         rigid_body_state = self.gym.acquire_rigid_body_state_tensor(self.sim)
         self.all_rigid_body_states = gymtorch.wrap_tensor(rigid_body_state)
         # add sensor dict, which will be filled during create sensor
-        self.sensor_tensor_dict = defaultdict(list)
+        self.sensor_tensor_dict = defaultdict(list) # 用于保存传感器观测信息的字典；
 
         for env_i, env_handle in enumerate(self.envs):
+            '''enumerate返回的可迭代量，标号，标号对应的内容'''
             if "forward_depth" in self.all_obs_components:
                 self.sensor_tensor_dict["forward_depth"].append(gymtorch.wrap_tensor(
                     self.gym.get_camera_image_gpu_tensor(
@@ -553,8 +554,8 @@ class LeggedRobotField(LeggedRobot):
                 self.gym.render_all_camera_sensors(self.sim)
                 self.gym.start_access_image_tensors(self.sim)
                 break
-        add_noise = self.add_noise; self.add_noise = False
-        return_ = super().compute_observations() # currently self.obs_buf is a mess
+        add_noise = self.add_noise; self.add_noise = False # 这里的add_noise操作就是为了保存当前状态，保证调用父类方法时候self.add_noise = False；
+        return_ = super().compute_observations() # currently self.obs_buf is a mess # 这个 return_ 值没什么用，父类该方法并没有返回有效信息；该方法通过直接作用类全局变量生效；
         self.obs_super_impl = self.obs_buf
         self.add_noise = add_noise
 
@@ -571,7 +572,7 @@ class LeggedRobotField(LeggedRobot):
             # from legged_robot_noisy.py does not need to be computed after adding the bias.
             # So, this computation order looks OK.
             assert hasattr(self, "gravity_bias")
-            proprioception_slice = get_obs_slice(self.obs_segments, "proprioception")
+            proprioception_slice = get_obs_slice(self.obs_segments, "proprioception") # 根据名称找到这个感知、根据感知张量形状计算信息数量，返回信息数量和形状；
             self.obs_buf[:, proprioception_slice[0].start + 6: proprioception_slice[0].start + 9] += self.gravity_bias
         if self.add_noise:
             self.obs_buf += (2 * torch.rand_like(self.obs_buf) - 1) * self.noise_scale_vec
@@ -602,7 +603,7 @@ class LeggedRobotField(LeggedRobot):
 
     def _get_noise_scale_vec(self, cfg):
         '''
-        按名称格式遍历调用所有预先定义的 noise 添加函数。具体函数实现在下面另外实现。
+        按名称格式遍历调用所有预先定义的 _noise 添加函数。具体函数实现在下面另外实现。
         该函数在类中 _init_buffers 函数中被调用
         '''
         noise_vec = torch.zeros_like(self.obs_buf[0])
@@ -656,6 +657,7 @@ class LeggedRobotField(LeggedRobot):
 
     def _create_envs(self):
         if self.cfg.domain_rand.randomize_motor:
+            '''对电机扭矩进行一定程度随机化'''
             mtr_rng = self.cfg.domain_rand.leg_motor_strength_range
             self.motor_strength = torch_rand_float(
                 mtr_rng[0],
@@ -725,7 +727,7 @@ class LeggedRobotField(LeggedRobot):
             props[0].com += gymapi.Vec3(*rand_com)
 
         if hasattr(self, "robot_config_buffer"):
-            self.robot_config_buffer[env_id, 1] = props[0].com.x
+            self.robot_config_buffer[env_id, 1] = props[0].com.x # 这个buffer似乎只是用于当做机器人的观测输入；
             self.robot_config_buffer[env_id, 2] = props[0].com.y
             self.robot_config_buffer[env_id, 3] = props[0].com.z
             self.robot_config_buffer[env_id, 4] = props[0].mass
