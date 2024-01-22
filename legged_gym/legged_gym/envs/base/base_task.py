@@ -173,6 +173,7 @@ class BaseTask():
                 self.gym.step_graphics(self.sim)
                 self.gym.draw_viewer(self.viewer, self.sim, True)
                 if sync_frame_time:
+                    '''这个选项决定当仿真时间快于实际时间时，是否需要等待跟实际时间；当仿真时间慢于实际时间时不起作用。'''
                     self.gym.sync_frame_time(self.sim)
             else:
                 self.gym.poll_viewer_events(self.viewer)

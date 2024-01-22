@@ -809,6 +809,8 @@ class LeggedRobot(BaseTask):
         tm_params.dynamic_friction = self.cfg.terrain.dynamic_friction
         tm_params.restitution = self.cfg.terrain.restitution
         self.gym.add_triangle_mesh(self.sim, self.terrain.vertices.flatten(order='C'), self.terrain.triangles.flatten(order='C'), tm_params)   
+        # 这里是直接从terrain实例中获取到的高度采样点。这些高度点跟仿真空间里的实体对应是怎样的？
+        # 如果我想获取仿真空间中沿着某一方向的数据应该怎么做？
         self.height_samples = torch.tensor(self.terrain.heightsamples).view(self.terrain.tot_rows, self.terrain.tot_cols).to(self.device)
 
     def _create_sensors(self, env_handle= None, actor_handle= None):

@@ -220,6 +220,8 @@ def main(args):
     )
 
     model = getattr(modules, config_dict["runner"]["policy_class_name"])(
+        # 从modules文件中直接按照config文件调用policy的类型（ActorCritic，ActorCriticRecurrent，VisualDeterministicRecurrent等等）；
+        # 生成的结果就是一个空的网路模型；
         num_actor_obs= unitree_real_env.num_obs,
         num_critic_obs= unitree_real_env.num_privileged_obs,
         num_actions= 12,
