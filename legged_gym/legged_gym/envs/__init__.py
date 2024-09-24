@@ -47,6 +47,7 @@ from .go1.go1_field_distill_config import Go1FieldDistillCfg, Go1FieldDistillCfg
 from .go2.go2_config import Go2RoughCfg, Go2RoughCfgPPO
 from .go2.go2_field_config import Go2FieldCfg, Go2FieldCfgPPO
 from .go2.go2_distill_config import Go2DistillCfg, Go2DistillCfgPPO
+from .base.legged_robot_noisy import LeggedRobotNoisyMixin
 
 
 import os
@@ -68,24 +69,24 @@ task_registry.register( "go2_distill", RobotFieldNoisy, Go2DistillCfg(), Go2Dist
 from .a1.a1_remote_config import A1RemoteCfg, A1RemoteCfgPPO
 task_registry.register( "a1_remote", LeggedRobot, A1RemoteCfg(), A1RemoteCfgPPO() )
 from .go1.go1_remote_config import Go1RemoteCfg, Go1RemoteCfgPPO
-task_registry.register( "go1_remote", LeggedRobotNoisy, Go1RemoteCfg(), Go1RemoteCfgPPO() )
+task_registry.register( "go1_remote", LeggedRobotNoisyMixin, Go1RemoteCfg(), Go1RemoteCfgPPO() )
 from .go1.go1_jump_config import Go1JumpCfg, Go1JumpCfgPPO
-task_registry.register( "go1_jump", LeggedRobotNoisy, Go1JumpCfg(), Go1JumpCfgPPO() )
+task_registry.register( "go1_jump", LeggedRobotNoisyMixin, Go1JumpCfg(), Go1JumpCfgPPO() )
 from .go1.go1_down_config import Go1DownCfg, Go1DownCfgPPO
-task_registry.register( "go1_down", LeggedRobotNoisy, Go1DownCfg(), Go1DownCfgPPO() )
+task_registry.register( "go1_down", LeggedRobotNoisyMixin, Go1DownCfg(), Go1DownCfgPPO() )
 from .go1.go1_leap_config import Go1LeapCfg, Go1LeapCfgPPO
-task_registry.register( "go1_leap", LeggedRobotNoisy, Go1LeapCfg(), Go1LeapCfgPPO() )
+task_registry.register( "go1_leap", LeggedRobotNoisyMixin, Go1LeapCfg(), Go1LeapCfgPPO() )
 from .go1.go1_crawl_config import Go1CrawlCfg, Go1CrawlCfgPPO
-task_registry.register( "go1_crawl", LeggedRobotNoisy, Go1CrawlCfg(), Go1CrawlCfgPPO() )
+task_registry.register( "go1_crawl", LeggedRobotNoisyMixin, Go1CrawlCfg(), Go1CrawlCfgPPO() )
 from .go1.go1_tilt_config import Go1TiltCfg, Go1TiltCfgPPO
-task_registry.register( "go1_tilt", LeggedRobotNoisy, Go1TiltCfg(), Go1TiltCfgPPO() )
+task_registry.register( "go1_tilt", LeggedRobotNoisyMixin, Go1TiltCfg(), Go1TiltCfgPPO() )
 
 # added from history go1_field_config for training
 from .go1.go1_field_config_his import Go1FieldHisCfg, Go1FieldHisCfgPPO
-task_registry.register( "go1_field_his", LeggedRobotNoisy, Go1FieldHisCfg(), Go1FieldHisCfgPPO())
+task_registry.register( "go1_field_his", LeggedRobotNoisyMixin, Go1FieldHisCfg(), Go1FieldHisCfgPPO())
 from .go1.go1_jump_config_his import Go1JumpHisCfg, Go1JumpHisCfgPPO
-task_registry.register( "go1_jump_his", LeggedRobotNoisy, Go1JumpHisCfg(), Go1JumpHisCfgPPO())
+task_registry.register( "go1_jump_his", LeggedRobotNoisyMixin, Go1JumpHisCfg(), Go1JumpHisCfgPPO())
 from .go1.go1_leap_config_his import Go1LeapHisCfg, Go1LeapHisCfgPPO
-task_registry.register("go1_leap_his", LeggedRobotNoisy, Go1LeapHisCfg(), Go1LeapHisCfgPPO())
+task_registry.register("go1_leap_his", LeggedRobotNoisyMixin, Go1LeapHisCfg(), Go1LeapHisCfgPPO())
 from .go1.go1_crawl_config_his import Go1CrawlHisCfg, Go1CrawlHisCfgPPO
-task_registry.register("go1_crawl_his",LeggedRobotNoisy, Go1CrawlHisCfg(), Go1CrawlHisCfgPPO())
+task_registry.register("go1_crawl_his",LeggedRobotNoisyMixin, Go1CrawlHisCfg(), Go1CrawlHisCfgPPO())
