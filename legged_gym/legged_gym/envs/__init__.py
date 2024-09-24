@@ -68,7 +68,6 @@ task_registry.register( "go2_distill", RobotFieldNoisy, Go2DistillCfg(), Go2Dist
 from .a1.a1_remote_config import A1RemoteCfg, A1RemoteCfgPPO
 task_registry.register( "a1_remote", LeggedRobot, A1RemoteCfg(), A1RemoteCfgPPO() )
 from .go1.go1_remote_config import Go1RemoteCfg, Go1RemoteCfgPPO
-<<<<<<< HEAD
 task_registry.register( "go1_remote", LeggedRobotNoisy, Go1RemoteCfg(), Go1RemoteCfgPPO() )
 from .go1.go1_jump_config import Go1JumpCfg, Go1JumpCfgPPO
 task_registry.register( "go1_jump", LeggedRobotNoisy, Go1JumpCfg(), Go1JumpCfgPPO() )
@@ -90,6 +89,3 @@ from .go1.go1_leap_config_his import Go1LeapHisCfg, Go1LeapHisCfgPPO
 task_registry.register("go1_leap_his", LeggedRobotNoisy, Go1LeapHisCfg(), Go1LeapHisCfgPPO())
 from .go1.go1_crawl_config_his import Go1CrawlHisCfg, Go1CrawlHisCfgPPO
 task_registry.register("go1_crawl_his",LeggedRobotNoisy, Go1CrawlHisCfg(), Go1CrawlHisCfgPPO())
-=======
-task_registry.register( "go1_remote", LeggedRobot, Go1RemoteCfg(), Go1RemoteCfgPPO() )
->>>>>>> 637080edaf7a04ceee88975d564a578e80c88581
