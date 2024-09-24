@@ -206,20 +206,6 @@ class OnPolicyRunner:
         str = f" \033[1m Learning iteration {self.current_learning_iteration}/{locs['tot_iter']} \033[0m "
 
         if len(locs['rewbuffer']) > 0:
-<<<<<<< HEAD
-            log_string = (f"""{'#' * width}\n"""
-                          f"""{str.center(width, ' ')}\n\n"""
-                          f"""{'Computation:':>{pad}} {fps:.0f} steps/s (collection: {locs[
-                            'collection_time']:.3f}s, learning {locs['learn_time']:.3f}s)\n"""
-                          f"""{'Value function loss:':>{pad}} {locs["losses"]['value_loss']:.4f}\n"""
-                          f"""{'Surrogate loss:':>{pad}} {locs["losses"]['surrogate_loss']:.4f}\n"""
-                          f"""{'Mean action noise std:':>{pad}} {mean_std.item():.2f}\n"""
-                          f"""{'Mean reward:':>{pad}} {statistics.mean(locs['rewbuffer']):.10f}\n"""
-                          f"""{'Mean episode length:':>{pad}} {statistics.mean(locs['lenbuffer']):.2f}\n"""
-                        #   f"""{'Mean reward/step:':>{pad}} {locs['mean_reward']:.2f}\n"""
-                        #   f"""{'Mean episode length/episode:':>{pad}} {locs['mean_trajectory_length']:.2f}\n"""
-                        )
-=======
             log_string = (
                 f"""{'#' * width}\n"""
                 f"""{str.center(width, ' ')}\n\n"""
@@ -235,7 +221,6 @@ class OnPolicyRunner:
                 # f"""{'Mean reward/step:':>{pad}} {locs['mean_reward']:.2f}\n"""
                 # f"""{'Mean episode length/episode:':>{pad}} {locs['mean_trajectory_length']:.2f}\n"""
             )
->>>>>>> 637080edaf7a04ceee88975d564a578e80c88581
         else:
             log_string = (
                 f"""{'#' * width}\n"""
